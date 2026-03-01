@@ -1,0 +1,2726 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#059669">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="বিসমিল্লাহ ফার্মেসী">
+<title>বিক্রয় হিসাব — বিসমিল্লাহ ফার্মেসী</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cash-dark:   #065f46;
+  --cash:        #059669;
+  --cash-mid:    #34d399;
+  --cash-light:  #d1fae5;
+  --cash-pale:   #ecfdf5;
+
+  --baki-dark:   #991b1b;
+  --baki:        #dc2626;
+  --baki-mid:    #f87171;
+  --baki-light:  #fee2e2;
+  --baki-pale:   #fff5f5;
+
+  --gold:        #f59e0b;
+  --gold-light:  #fef3c7;
+  --ink:         #0f172a;
+  --ink-mid:     #334155;
+  --muted:       #64748b;
+  --border:      #e2e8f0;
+  --surface:     #f8fafc;
+  --white:       #ffffff;
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.07);
+  --shadow:      0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.14);
+  --r-sm: 10px;
+  --r:    16px;
+  --r-lg: 22px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family:'Hind Siliguri','Noto Sans Bengali',sans-serif;
+  background:#f0fdf4;
+  color:var(--ink);
+  min-height:100vh;
+  max-width:480px;
+  margin:0 auto;
+}
+
+/* ── HEADER ─────────────────────────── */
+.app-header {
+  background:linear-gradient(135deg, var(--cash-dark) 0%, var(--cash) 55%, #10b981 100%);
+  padding:14px 16px 0;
+  position:sticky; top:0; z-index:200;
+  box-shadow:0 4px 20px rgba(5,150,105,0.4);
+}
+.hdr-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.hdr-brand { display:flex; align-items:center; gap:10px; }
+.hdr-logo {
+  width:40px; height:40px; border-radius:11px;
+  background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.3);
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+}
+.hdr-name { color:#fff; }
+.hdr-name h1 { font-size:16px; font-weight:800; line-height:1.1; }
+.hdr-name p  { font-size:10px; opacity:.75; margin-top:1px; }
+.hdr-date {
+  background:rgba(255,255,255,0.2); color:#fff;
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:8px; padding:5px 10px; font-size:11px; font-weight:600;
+}
+
+/* TAB BAR */
+.tab-bar { display:flex; gap:4px; padding:0 2px; }
+.tab-btn {
+  flex:1; padding:10px 6px; border:none; cursor:pointer;
+  font-family:inherit; font-size:12px; font-weight:700;
+  border-radius:10px 10px 0 0; transition:all .2s;
+  background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.7);
+}
+.tab-btn.active { background:#fff; color:var(--cash-dark); }
+.tab-btn.tab-baki.active { color:var(--baki-dark); }
+
+/* ── PAGES ───────────────────────────── */
+.page { display:none; padding:14px 14px 90px; animation:fadeUp .25s ease; }
+.page.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* ── OPENING CASH BAR ────────────────── */
+.opening-bar {
+  background:linear-gradient(120deg,#7c3aed,#a78bfa);
+  border-radius:var(--r-sm); padding:10px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px; cursor:pointer;
+  box-shadow:0 3px 12px rgba(124,58,237,.3);
+}
+.ob-left { display:flex; align-items:center; gap:10px; }
+.ob-icon { font-size:20px; }
+.ob-label { color:rgba(255,255,255,.8); font-size:11px; font-weight:600; }
+.ob-amount { color:#fff; font-size:18px; font-weight:900; line-height:1; }
+.ob-edit { color:rgba(255,255,255,.7); font-size:18px; }
+
+/* ── SECTION CARD ────────────────────── */
+.section-card {
+  background:#fff; border-radius:var(--r);
+  box-shadow:var(--shadow); margin-bottom:14px;
+  overflow:hidden;
+}
+.section-head {
+  padding:13px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+}
+.sh-left { display:flex; align-items:center; gap:10px; }
+.sh-icon {
+  width:36px; height:36px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.sh-title { font-size:15px; font-weight:800; }
+.sh-subtitle { font-size:11px; color:var(--muted); margin-top:1px; }
+.sh-badge {
+  padding:4px 10px; border-radius:20px;
+  font-size:12px; font-weight:700;
+}
+.sh-toggle { font-size:14px; color:var(--muted); transition:transform .25s; }
+.sh-toggle.open { transform:rotate(180deg); }
+.section-body { display:none; padding:0 14px 14px; }
+.section-body.open { display:block; }
+
+/* ── FORM LABELS ─────────────────────── */
+.field { margin-bottom:13px; }
+.field-label {
+  display:flex; align-items:center; gap:6px;
+  font-size:13px; font-weight:700; margin-bottom:6px;
+}
+.field-label .fl-dot {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0;
+}
+.field-label .fl-text { }
+.field-label .fl-req { color:var(--baki); font-size:14px; margin-left:2px; }
+.field-label .fl-opt {
+  font-size:10px; color:var(--muted); font-weight:500;
+  background:var(--surface); border-radius:5px; padding:1px 6px; margin-left:4px;
+}
+
+.f-date .field-label .fl-dot   { background:#7c3aed; }
+.f-desc .field-label .fl-dot   { background:var(--gold); }
+.f-money .field-label .fl-dot  { background:var(--cash); }
+.f-visit .field-label .fl-dot  { background:#0891b2; }
+.f-name .field-label .fl-dot   { background:var(--baki); }
+.f-addr .field-label .fl-dot   { background:#ea580c; }
+.f-phone .field-label .fl-dot  { background:#2563eb; }
+.f-baki .field-label .fl-dot   { background:var(--baki); }
+.f-joma .field-label .fl-dot   { background:var(--cash); }
+.f-calc .field-label .fl-dot   { background:#7c3aed; }
+
+/* color-tinted labels */
+.f-date  .fl-text { color:#7c3aed; }
+.f-desc  .fl-text { color:#b45309; }
+.f-money .fl-text { color:var(--cash-dark); }
+.f-visit .fl-text { color:#0e7490; }
+.f-name  .fl-text { color:var(--baki-dark); }
+.f-addr  .fl-text { color:#c2410c; }
+.f-phone .fl-text { color:#1d4ed8; }
+.f-baki  .fl-text { color:var(--baki-dark); }
+.f-joma  .fl-text { color:var(--cash-dark); }
+.f-calc  .fl-text { color:#6d28d9; }
+
+/* ── INPUTS ──────────────────────────── */
+.inp-wrap { position:relative; }
+.inp, .inp-sel {
+  width:100%; padding:11px 14px; border:2px solid var(--border);
+  border-radius:var(--r-sm); font-family:inherit; font-size:14px;
+  background:var(--surface); color:var(--ink); transition:border .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.inp:focus, .inp-sel:focus {
+  outline:none; border-color:var(--cash); background:#fff;
+  box-shadow:0 0 0 3px rgba(5,150,105,.12);
+}
+.inp.baki-focus:focus { border-color:var(--baki); box-shadow:0 0 0 3px rgba(220,38,38,.12); }
+.inp-big { font-size:22px; font-weight:800; padding:12px 14px; }
+.inp-calc { background:#f0fdf4; color:var(--cash-dark); font-weight:800; font-size:16px; }
+.inp-calc-red { background:var(--baki-light); color:var(--baki-dark); font-weight:800; font-size:16px; }
+.inp-with-icon { padding-right:46px; }
+
+.inp-icon-btn {
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  width:32px; height:32px; border-radius:8px; border:none;
+  background:var(--surface); cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* row of 2 */
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+/* ── AUTOCOMPLETE ────────────────────── */
+.ac-list {
+  position:absolute; top:100%; left:0; right:0; z-index:300;
+  background:#fff; border:2px solid var(--cash); border-top:none;
+  border-radius:0 0 10px 10px; max-height:150px; overflow-y:auto;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+.ac-item {
+  padding:9px 14px; cursor:pointer; font-size:13px;
+  border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px;
+}
+.ac-item:last-child { border-bottom:none; }
+.ac-item:active { background:var(--cash-light); }
+
+/* ── CAMERA / CONTACT BTNS ───────────── */
+.extra-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:7px 12px; border-radius:8px; border:none;
+  font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;
+}
+.btn-cam   { background:#e0f2fe; color:#0369a1; }
+.btn-cont  { background:var(--cash-light); color:var(--cash-dark); }
+.btn-row   { display:flex; gap:8px; margin-bottom:13px; }
+.btn-row input[type=file] { display:none; }
+
+/* ── ACTION BUTTONS ──────────────────── */
+.btn {
+  padding:11px 18px; border-radius:var(--r-sm); border:none; cursor:pointer;
+  font-family:inherit; font-size:14px; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  transition:all .18s;
+}
+.btn:active { transform:scale(.97); }
+.btn-cash    { background:var(--cash); color:#fff; }
+.btn-baki    { background:var(--baki); color:#fff; }
+.btn-gold    { background:var(--gold); color:#fff; }
+.btn-dark    { background:var(--ink); color:#fff; }
+.btn-outline { background:#fff; border:2px solid var(--border); color:var(--ink-mid); }
+.btn-ghost   { background:var(--surface); color:var(--ink-mid); }
+.btn-full    { width:100%; }
+.btn-sm      { padding:7px 11px; font-size:12px; border-radius:8px; }
+.btn-purple  { background:#7c3aed; color:#fff; }
+
+/* ── SUMMARY ROW ─────────────────────── */
+.summary-strip {
+  background:var(--cash-pale); border:1.5px solid var(--cash-light);
+  border-radius:var(--r-sm); padding:11px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:13px;
+}
+.ss-label { font-size:12px; color:var(--cash-dark); font-weight:600; }
+.ss-amount { font-size:22px; font-weight:900; color:var(--cash-dark); }
+.ss-count  { font-size:11px; color:var(--muted); margin-top:1px; }
+
+/* ── ENTRIES LIST ────────────────────── */
+.entry-list { margin-top:4px; }
+.entry-item {
+  background:#fff; border-radius:var(--r-sm);
+  border:1.5px solid var(--border); border-left:4px solid var(--cash);
+  padding:12px; margin-bottom:8px; box-shadow:var(--shadow-sm);
+}
+.entry-item.baki-entry { border-left-color:var(--baki); }
+.ei-top   { display:flex; justify-content:space-between; align-items:flex-start; }
+.ei-main  { flex:1; }
+.ei-title { font-size:14px; font-weight:800; color:var(--ink); }
+.ei-meta  { font-size:11px; color:var(--muted); margin-top:3px; display:flex; flex-wrap:wrap; gap:6px; }
+.ei-meta span { display:flex; align-items:center; gap:3px; }
+.ei-right { text-align:right; flex-shrink:0; margin-left:10px; }
+.ei-amount { font-size:17px; font-weight:900; }
+.ei-badge  { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; margin-top:3px; }
+.badge-cash    { background:var(--cash-light); color:var(--cash-dark); }
+.badge-baki    { background:var(--baki-light); color:var(--baki-dark); }
+.badge-paid    { background:#d1fae5; color:#065f46; }
+.badge-partial { background:var(--gold-light); color:#92400e; }
+.ei-actions { display:flex; gap:6px; margin-top:9px; flex-wrap:wrap; }
+.ei-photo { width:100%; max-height:120px; object-fit:cover; border-radius:8px; margin-top:8px; cursor:pointer; }
+.ei-note  { font-size:12px; color:var(--ink-mid); margin-top:5px; background:var(--surface); border-radius:7px; padding:6px 10px; }
+
+/* ── CUSTOMER LIST ───────────────────── */
+.customer-item {
+  background:#fff; border-radius:var(--r-sm);
+  border:1.5px solid var(--border);
+  padding:13px; margin-bottom:8px; box-shadow:var(--shadow-sm);
+  cursor:pointer; transition:all .15s;
+}
+.customer-item:active { transform:scale(.98); background:var(--baki-pale); }
+.ci-top { display:flex; align-items:center; gap:12px; }
+.ci-avatar {
+  width:44px; height:44px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; font-weight:800; color:#fff; flex-shrink:0;
+  border:2px solid rgba(255,255,255,.5);
+}
+.ci-name  { font-size:15px; font-weight:800; }
+.ci-info  { font-size:11px; color:var(--muted); margin-top:2px; }
+.ci-stats { display:flex; gap:8px; margin-top:10px; }
+.ci-stat  { flex:1; padding:7px 8px; border-radius:8px; text-align:center; }
+.ci-stat .csl { font-size:10px; color:var(--muted); font-weight:600; }
+.ci-stat .csv { font-size:13px; font-weight:800; margin-top:2px; }
+
+/* ── DIVIDER WITH LETTER ─────────────── */
+.alpha-divider {
+  display:flex; align-items:center; gap:8px; margin:10px 0 6px;
+}
+.alpha-circle {
+  width:26px; height:26px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:800; color:#fff; flex-shrink:0;
+}
+.alpha-line { flex:1; height:1px; background:var(--border); }
+
+/* ── SEARCH BOX ──────────────────────── */
+.search-box {
+  display:flex; align-items:center; gap:8px;
+  background:#fff; border:2px solid var(--border);
+  border-radius:var(--r-sm); padding:9px 14px; margin-bottom:12px;
+}
+.search-box input { flex:1; border:none; outline:none; font-family:inherit; font-size:14px; }
+
+/* ── MODAL ───────────────────────────── */
+.modal-bg {
+  position:fixed; inset:0; background:rgba(0,0,0,.55);
+  z-index:500; display:none; align-items:flex-end;
+  backdrop-filter:blur(3px);
+}
+.modal-bg.open { display:flex; }
+.modal {
+  background:#fff; border-radius:22px 22px 0 0;
+  padding:22px 16px 30px; width:100%; max-width:480px;
+  max-height:92vh; overflow-y:auto; margin:0 auto;
+  animation:slideUp .28s ease;
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
+.modal-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.modal-title { font-size:17px; font-weight:800; }
+.modal-close {
+  width:32px; height:32px; border-radius:50%; border:none;
+  background:var(--surface); color:var(--muted); font-size:18px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+
+/* ── BILL / MEMO ─────────────────────── */
+.bill-paper {
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--r); padding:18px; margin-top:10px;
+}
+.bill-header { text-align:center; padding-bottom:12px; border-bottom:2px dashed var(--border); margin-bottom:12px; }
+.bill-pharmacy { font-size:20px; font-weight:900; color:var(--cash-dark); }
+.bill-address  { font-size:11px; color:var(--muted); margin-top:2px; }
+.bill-type-tag {
+  display:inline-block; margin-top:8px; padding:3px 14px;
+  border-radius:20px; font-size:12px; font-weight:700;
+}
+.bill-row { display:flex; justify-content:space-between; padding:5px 0; font-size:13px; border-bottom:1px solid #f1f5f9; }
+.bill-row:last-child { border-bottom:none; }
+.bill-total { font-weight:900; font-size:15px; padding-top:10px; margin-top:6px; border-top:2px solid var(--border); }
+.bill-footer { text-align:center; margin-top:12px; font-size:11px; color:var(--muted); padding-top:10px; border-top:1px dashed var(--border); }
+
+/* ── TOAST ───────────────────────────── */
+.toast {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:#fff; padding:10px 22px;
+  border-radius:30px; font-size:13px; font-weight:700;
+  z-index:999; opacity:0; pointer-events:none; transition:all .3s;
+  white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── BOTTOM NAV ──────────────────────── */
+.bottom-nav {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:480px; background:#fff;
+  border-top:1px solid var(--border); display:flex;
+  padding:8px 0 12px; z-index:100;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+}
+.bn-btn {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:3px; border:none; background:transparent; cursor:pointer;
+  font-family:inherit; font-size:10px; font-weight:700; color:var(--muted);
+  padding:4px; transition:color .2s;
+}
+.bn-btn.active { color:var(--cash); }
+.bn-btn.active.baki-active { color:var(--baki); }
+.bn-icon { font-size:22px; }
+
+/* ── CUSTOMER DETAIL STATS ───────────── */
+.cust-stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
+.cust-stat-box { background:var(--surface); border-radius:10px; padding:10px; text-align:center; }
+.csb-label { font-size:10px; color:var(--muted); font-weight:600; }
+.csb-val   { font-size:15px; font-weight:900; margin-top:2px; }
+
+/* ── EMPTY ───────────────────────────── */
+.empty { text-align:center; padding:36px 20px; color:var(--muted); }
+.empty .e-icon { font-size:46px; margin-bottom:8px; }
+.empty p { font-size:13px; }
+
+/* ── ADD CUSTOMER CARD ───────────────── */
+.add-customer-card {
+  background:linear-gradient(120deg, var(--baki-pale), #fff);
+  border:2px dashed var(--baki-mid); border-radius:var(--r);
+  padding:16px; text-align:center; cursor:pointer; margin-bottom:14px;
+  transition:background .2s;
+}
+.add-customer-card:active { background:var(--baki-light); }
+
+/* ── SEPARATOR ───────────────────────── */
+.sep { height:1px; background:var(--border); margin:12px 0; }
+
+/* quick number pad feel */
+.inp-money { font-size:24px; font-weight:900; color:var(--cash-dark); text-align:right; }
+
+/* ── CHALKBOARD LABEL ────────────────── */
+.chk-label {
+  font-size:17px; font-weight:900;
+  margin-bottom:7px; display:block;
+  letter-spacing:0.2px;
+}
+/* ── NUMBER INPUT ─────────────────────── */
+.inp-num { font-size:18px !important; font-weight:700 !important; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<div class="app-header">
+  <div class="hdr-top">
+    <div class="hdr-brand">
+      <div class="hdr-logo">💊</div>
+      <div class="hdr-name">
+        <h1>বিসমিল্লাহ ফার্মেসী</h1>
+        <p>বামনসুন্দর দারোগার হাট, মিরসরাই, চট্টগ্রাম</p>
+      </div>
+    </div>
+    <div class="hdr-date" id="headerDate"></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-cash" onclick="switchTab('cash')">💚 নগদ</button>
+    <button class="tab-btn tab-baki" id="tab-baki" onclick="switchTab('baki')">❤️ বাকি</button>
+    <button class="tab-btn" id="tab-kroy" onclick="switchTab('kroy')" style="color:rgba(255,255,255,0.7);">🛒 ক্রয়</button>
+    <button class="tab-btn" id="tab-khoroch" onclick="switchTab('khoroch')" style="color:rgba(255,255,255,0.7);">💸 খরচ</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: নগদ বিক্রয়
+════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-cash">
+
+  <!-- প্রারম্ভিক ক্যাশ বার -->
+  <div class="opening-bar" onclick="openOpeningModal()">
+    <div class="ob-left">
+      <div class="ob-icon">💜</div>
+      <div>
+        <div class="ob-label">প্রারম্ভিক ক্যাশ</div>
+        <div class="ob-amount" id="openingDisplay">৳ ০</div>
+      </div>
+    </div>
+    <div class="ob-edit">✏️</div>
+  </div>
+
+  <!-- এন্ট্রি সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('cashEntry')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:var(--cash-light);">💚</div>
+        <div>
+          <div class="sh-title" style="color:var(--cash-dark);">নগদ বিক্রয় এন্ট্রি</div>
+          <div class="sh-subtitle">নতুন বিক্রি যোগ করুন</div>
+        </div>
+      </div>
+      <div class="sh-toggle open" id="toggle-cashEntry">▼</div>
+    </div>
+    <div class="section-body open" id="body-cashEntry">
+      <div id="cashPhotoPreview"></div>
+
+      <!-- তারিখ + বিবরণ: পাশাপাশি -->
+      <div class="row2">
+        <div class="field f-date">
+          <div class="chk-label" style="color:#7c3aed;">📅 তারিখ</div>
+          <input type="date" class="inp inp-num" id="cashDate" style="font-size:15px; font-weight:700; color:#6d28d9;">
+        </div>
+        <div class="field f-desc">
+          <div class="chk-label" style="color:#b45309;">📝 বিবরণ <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span></div>
+          <div class="inp-wrap">
+            <input type="text" class="inp" id="cashDesc" placeholder="ওষুধের নাম..." autocomplete="off" oninput="acCashDesc(this)" style="font-size:15px; font-weight:600;">
+            <div class="ac-list" id="ac-cashDesc" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- টাকা + ভিজিট: পাশাপাশি, বড় সংখ্যা -->
+      <div class="row2" style="margin-bottom:10px;">
+        <div class="field f-money" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#065f46;">💵 টাকা <span style="color:var(--baki);font-size:14px;">*</span></div>
+          <input type="number" class="inp inp-num" id="cashAmount" placeholder="০" oninput="calcCashTotal()" style="font-size:30px; font-weight:900; color:var(--cash-dark); text-align:center; letter-spacing:1px;">
+        </div>
+        <div class="field f-visit" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#0e7490;">🩺 ভিজিট <span style="font-size:11px;font-weight:500;color:var(--muted);">(ঐচ্ছিক)</span></div>
+          <input type="number" class="inp inp-num" id="cashVisit" placeholder="০" oninput="calcCashTotal()" style="font-size:26px; font-weight:800; color:#0e7490; text-align:center;">
+        </div>
+      </div>
+
+      <!-- মোট (ছোট) + ক্যামেরা পাশাপাশি -->
+      <div style="display:flex; align-items:flex-end; gap:10px; margin-bottom:12px;">
+        <div style="flex:1;">
+          <div class="chk-label" style="color:#065f46; font-size:15px;">🧾 মোট টাকা</div>
+          <input type="number" class="inp" id="cashTotal" readonly placeholder="০"
+            style="font-size:24px; font-weight:900; color:var(--cash-dark); background:var(--cash-pale); border-color:var(--cash-mid); text-align:center; border-width:2px;">
+        </div>
+        <div style="flex-shrink:0; text-align:center;">
+          <div class="chk-label" style="color:#0369a1; text-align:center;">📷 ছবি</div>
+          <label style="display:flex; align-items:center; justify-content:center; width:56px; height:48px; background:#e0f2fe; border-radius:10px; cursor:pointer; border:2px solid #7dd3fc; font-size:24px;">
+            📷
+            <input type="file" accept="image/*" capture="environment" id="cashCamera" onchange="capturePhoto(this,'cashPhotoPreview')" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-cash btn-full" style="font-size:16px; padding:14px;" onclick="saveCash()">💾 &nbsp; এন্ট্রি সেভ করুন</button>
+    </div>
+  </div>
+
+  <!-- হিসাব তালিকা সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('cashList')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:var(--cash-light);">📋</div>
+        <div>
+          <div class="sh-title" style="color:var(--cash-dark);">নগদ বিক্রয়ের হিসাব</div>
+          <div class="sh-subtitle" id="cashListSubtitle">আজকের তালিকা</div>
+        </div>
+      </div>
+      <div class="sh-toggle" id="toggle-cashList">▼</div>
+    </div>
+    <div class="section-body" id="body-cashList">
+
+      <!-- সারসংক্ষেপ: প্রারম্ভিক ক্যাশ + বিক্রয় -->
+      <div style="background:var(--cash-pale); border:2px solid var(--cash-light); border-radius:var(--r-sm); padding:13px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--cash-mid);">
+          <div style="font-size:12px; color:var(--cash-dark); font-weight:700;">💜 প্রারম্ভিক ক্যাশ</div>
+          <div style="font-size:16px; font-weight:800; color:#7c3aed;" id="openingInSummary">৳ ০</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--cash-mid);">
+          <div>
+            <div style="font-size:12px; color:var(--cash-dark); font-weight:700;">💚 মোট বিক্রয়</div>
+            <div style="font-size:11px; color:var(--muted);" id="cashCountDisplay">০টি এন্ট্রি</div>
+          </div>
+          <div style="font-size:20px; font-weight:900; color:var(--cash-dark);" id="cashTotalDisplay">৳ ০</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:14px; color:var(--cash-dark); font-weight:900;">🧾 মোট হিসাব (ক্যাশ + বিক্রয়)</div>
+          <div style="font-size:22px; font-weight:900; color:var(--cash-dark);" id="cashGrandTotal">৳ ০</div>
+        </div>
+        <button class="btn btn-sm btn-gold" style="width:100%; margin-top:10px;" onclick="openMemoModal('cash')">📄 আজকের মেমো তৈরি করুন</button>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="বিবরণ বা তারিখ দিয়ে খুঁজুন..." oninput="filterCashList(this.value)">
+      </div>
+      <div class="entry-list" id="cashEntryList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: বাকি বিক্রয়
+════════════════════════════════════════════════════════ -->
+<div class="page" id="page-baki">
+
+  <!-- কাস্টমার যুক্ত করুন -->
+  <div class="add-customer-card" onclick="openAddCustomerModal()" style="padding:10px 14px; display:flex; align-items:center; gap:10px; text-align:left;">
+    <div style="font-size:22px; flex-shrink:0;">👤</div>
+    <div>
+      <div style="font-size:14px; font-weight:800; color:var(--baki-dark);">★ নতুন কাস্টমার যুক্ত করুন</div>
+      <div style="font-size:11px; color:var(--muted);">ট্যাপ করুন</div>
+    </div>
+    <div style="margin-left:auto; font-size:18px; color:var(--baki-mid);">＋</div>
+  </div>
+
+  <!-- এন্ট্রি সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('bakiEntry')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:var(--baki-light);">❤️</div>
+        <div>
+          <div class="sh-title" style="color:var(--baki-dark);">বাকি বিক্রয় এন্ট্রি</div>
+          <div class="sh-subtitle">নতুন বাকি এন্ট্রি করুন</div>
+        </div>
+      </div>
+      <div class="sh-toggle open" id="toggle-bakiEntry">▼</div>
+    </div>
+    <div class="section-body open" id="body-bakiEntry">
+      <div id="bakiPhotoPreview"></div>
+
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button class="extra-btn btn-cont" style="flex:1; justify-content:center;" onclick="pickContact('bakiName','bakiPhone','bakiAddr')">📱 কন্টাক্ট থেকে নিন</button>
+      </div>
+
+      <!-- তারিখ + নাম: পাশাপাশি -->
+      <div class="row2">
+        <div class="field f-date" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#7c3aed;">📅 তারিখ</div>
+          <input type="date" class="inp inp-num" id="bakiDate" style="font-size:14px; font-weight:700; color:#6d28d9;">
+        </div>
+        <div class="field f-name" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#991b1b;">👤 গ্রাহকের নাম <span style="color:var(--baki);">*</span></div>
+          <div class="inp-wrap">
+            <input type="text" class="inp baki-focus" id="bakiName" placeholder="নাম লিখুন..."
+              autocomplete="off" oninput="acBakiName(this)" onchange="loadPrevBaki()"
+              style="font-size:18px; font-weight:800; padding:14px 40px 14px 14px; color:var(--baki-dark); background:var(--baki-pale); border-color:var(--baki-mid);">
+            <button class="inp-icon-btn" onclick="openCustomerPicker()" style="font-size:14px; top:50%; transform:translateY(-50%);">👥</button>
+            <div class="ac-list" id="ac-bakiName" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ঠিকানা + মোবাইল: পাশাপাশি -->
+      <div class="row2" style="margin-bottom:10px;">
+        <div class="field f-phone" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#1d4ed8;">📱 মোবাইল <span style="color:var(--baki);">*</span></div>
+          <input type="tel" class="inp baki-focus" id="bakiPhone" placeholder="০১XXXXXXXXX" style="font-size:16px; font-weight:700; letter-spacing:1px;">
+        </div>
+        <div class="field f-addr" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#c2410c;">📍 ঠিকানা</div>
+          <div class="inp-wrap">
+            <input type="text" class="inp baki-focus" id="bakiAddr" placeholder="গ্রাম/পাড়া" autocomplete="off" oninput="acAddr(this)" style="font-size:15px;">
+            <div class="ac-list" id="ac-bakiAddr" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- আজকের বাকি -->
+      <div class="field f-baki" style="margin-bottom:10px;">
+        <div class="chk-label" style="color:#991b1b; font-size:18px;">🔴 আজকের বাকি <span style="color:var(--baki);">*</span></div>
+        <input type="number" class="inp baki-focus" id="bakiToday"
+          placeholder="০" oninput="calcBakiBalance()"
+          style="font-size:32px; font-weight:900; color:var(--baki-dark); text-align:center; background:var(--baki-pale); border-color:var(--baki-mid); border-width:2px;">
+      </div>
+
+      <!-- পূর্বের বাকি + জমা: পাশাপাশি -->
+      <div class="row2" style="margin-bottom:10px;">
+        <div class="field" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#6d28d9;">📌 পূর্বের বাকি <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span></div>
+          <input type="number" class="inp" id="bakiPrev" readonly placeholder="০"
+            style="font-size:22px; font-weight:800; color:var(--baki-dark); background:var(--baki-light); text-align:center; border-color:var(--baki-mid);">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <div class="chk-label" style="color:#065f46;">💚 আজকের জমা</div>
+          <input type="number" class="inp" id="bakiJoma"
+            placeholder="০" oninput="calcBakiBalance()"
+            style="font-size:22px; font-weight:800; color:var(--cash-dark); text-align:center; background:var(--cash-pale); border-color:var(--cash-mid);">
+        </div>
+      </div>
+
+      <!-- অবশিষ্ট পাবো + ক্যামেরা -->
+      <div style="display:flex; align-items:flex-end; gap:10px; margin-bottom:12px;">
+        <div style="flex:1;">
+          <div class="chk-label" style="color:#991b1b; font-size:17px;">🧾 অবশিষ্ট পাবো <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span></div>
+          <input type="number" class="inp" id="bakiRemain" readonly placeholder="০"
+            style="font-size:26px; font-weight:900; color:var(--baki-dark); background:var(--baki-pale); border-color:var(--baki); text-align:center; border-width:2px;">
+        </div>
+        <div style="flex-shrink:0; text-align:center;">
+          <div class="chk-label" style="color:#0369a1; text-align:center; font-size:13px;">📷 ছবি</div>
+          <label style="display:flex; align-items:center; justify-content:center; width:56px; height:52px; background:#e0f2fe; border-radius:10px; cursor:pointer; border:2px solid #7dd3fc; font-size:24px;">
+            📷
+            <input type="file" accept="image/*" capture="environment" id="bakiCamera" onchange="capturePhoto(this,'bakiPhotoPreview')" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-baki btn-full" style="font-size:16px; padding:14px;" onclick="saveBaki()">💾 &nbsp; বাকি এন্ট্রি সেভ করুন</button>
+    </div>
+  </div>
+
+  <!-- বাকি তালিকা সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('bakiList')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:var(--baki-light);">📋</div>
+        <div>
+          <div class="sh-title" style="color:var(--baki-dark);">বাকির তালিকা</div>
+          <div class="sh-subtitle">গ্রাহকের নাম অনুযায়ী</div>
+        </div>
+      </div>
+      <div class="sh-toggle" id="toggle-bakiList">▼</div>
+    </div>
+    <div class="section-body" id="body-bakiList">
+      <!-- মোট বাকি সারসংক্ষেপ -->
+      <div style="background:var(--baki-pale); border:1.5px solid var(--baki-light); border-radius:var(--r-sm); padding:11px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <div style="font-size:12px; color:var(--baki-dark); font-weight:600;">মোট বাকি পাওনা</div>
+          <div style="font-size:24px; font-weight:900; color:var(--baki-dark);" id="bakiTotalDisplay">৳ ০</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px; color:var(--muted);" id="bakiCountDisplay">০ জন গ্রাহক</div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="গ্রাহকের নাম দিয়ে খুঁজুন..." oninput="filterBakiList(this.value)">
+      </div>
+      <div id="bakiCustomerList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOTTOM NAV ════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     PAGE: ক্রয় হিসাব
+════════════════════════════════════════════════════════ -->
+<div class="page" id="page-kroy">
+
+  <!-- কোম্পানি যুক্ত করুন + দেখুন/লুকান -->
+  <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <div class="add-customer-card" onclick="openAddCompanyModal()"
+      style="flex:1;padding:10px 14px;display:flex;align-items:center;gap:8px;text-align:left;border-color:#93c5fd;background:linear-gradient(120deg,#eff6ff,#fff);margin-bottom:0;">
+      <div style="font-size:20px;flex-shrink:0;">🏢</div>
+      <div style="font-size:13px;font-weight:800;color:#1e40af;">★ কোম্পানি যুক্ত করুন</div>
+      <div style="margin-left:auto;font-size:18px;color:#93c5fd;">＋</div>
+    </div>
+    <button onclick="toggleSection('companyList')"
+      style="padding:10px 14px;border-radius:12px;border:2px solid #93c5fd;background:#eff6ff;color:#1e40af;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;">
+      দেখুন/লুকান <span id="companyListCount" style="background:#1e40af;color:#fff;border-radius:20px;padding:1px 8px;font-size:12px;">০</span>
+    </button>
+  </div>
+
+  <!-- কোম্পানি তালিকা (collapsible) -->
+  <div class="section-body" id="body-companyList" style="display:none;background:#fff;border:1.5px solid #bfdbfe;border-radius:12px;margin-bottom:10px;padding:0;overflow:hidden;">
+    <div id="companyListItems" style="max-height:300px;overflow-y:auto;"></div>
+  </div>
+
+  <!-- ক্রয় টাইপ টগল -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+    <button id="kroy-type-nagod" onclick="setKroyType('nagod')"
+      style="padding:12px;border-radius:10px;border:2px solid #1e40af;background:#1e40af;color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;">
+      💵 নগদ ক্রয়
+    </button>
+    <button id="kroy-type-baki" onclick="setKroyType('baki')"
+      style="padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;">
+      🔴 বাকি ক্রয়
+    </button>
+  </div>
+
+  <!-- এন্ট্রি সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('kroyEntry')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:#dbeafe;">🛒</div>
+        <div>
+          <div class="sh-title" style="color:#1e40af;" id="kroyEntryTitle">নগদ ক্রয় এন্ট্রি</div>
+          <div class="sh-subtitle">নতুন ক্রয় যোগ করুন</div>
+        </div>
+      </div>
+      <div class="sh-toggle open" id="toggle-kroyEntry">▼</div>
+    </div>
+    <div class="section-body open" id="body-kroyEntry">
+      <div id="kroyPhotoPreview"></div>
+
+      <!-- কন্টাক্ট বাটন -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="extra-btn btn-cont" style="flex:1;justify-content:center;" onclick="pickContact('kroyCompany','kroyPhone','')">📱 কন্টাক্ট থেকে নিন</button>
+      </div>
+
+      <!-- তারিখ + কোম্পানি -->
+      <div class="row2">
+        <div class="field" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#7c3aed;">📅 তারিখ</div>
+          <input type="date" class="inp" id="kroyDate" style="font-size:14px;font-weight:700;color:#6d28d9;">
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#1e40af;">🏢 কোম্পানি <span style="color:var(--baki);">*</span></div>
+          <div class="inp-wrap">
+            <input type="text" class="inp" id="kroyCompany" placeholder="কোম্পানির নাম..."
+              autocomplete="off" oninput="acKroyCompany(this)" onchange="loadKroyPrevBaki()"
+              style="font-size:15px;font-weight:800;color:#1e40af;background:#eff6ff;border-color:#93c5fd;padding-right:36px;">
+            <button class="inp-icon-btn" onclick="openCompanyPicker()" style="font-size:14px;">🏢</button>
+            <div class="ac-list" id="ac-kroyCompany" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- মোবাইল -->
+      <div class="field" style="margin-bottom:10px;">
+        <div class="chk-label" style="color:#1d4ed8;">📱 মোবাইল নং</div>
+        <input type="tel" class="inp" id="kroyPhone" placeholder="০১XXXXXXXXX"
+          style="font-size:16px;font-weight:700;letter-spacing:1px;">
+      </div>
+
+      <!-- পূর্বের বাকি (অটো) -->
+      <div class="field" style="margin-bottom:10px;">
+        <div class="chk-label" style="color:#6d28d9;">📌 পূর্বের বাকি <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span></div>
+        <input type="number" class="inp" id="kroyPrevBaki" readonly placeholder="০"
+          style="font-size:20px;font-weight:800;color:var(--baki-dark);background:var(--baki-light);text-align:center;border-color:var(--baki-mid);">
+      </div>
+
+      <!-- আজকের ক্রয় (নগদ বা বাকি) -->
+      <div class="field" style="margin-bottom:10px;">
+        <div class="chk-label" id="kroyTodayLabel" style="color:#1e40af;font-size:18px;">💵 আজকের নগদ ক্রয় <span style="color:var(--baki);">*</span></div>
+        <input type="number" class="inp" id="kroyTodayAmount"
+          placeholder="০" oninput="calcKroyBalance()"
+          style="font-size:32px;font-weight:900;color:#1e40af;text-align:center;background:#eff6ff;border-color:#93c5fd;border-width:2px;">
+      </div>
+
+      <!-- আজকের জমা -->
+      <div class="field" id="kroyJomaField" style="margin-bottom:10px;display:none;">
+        <div class="chk-label" style="color:#065f46;">💚 আজকের জমা</div>
+        <input type="number" class="inp" id="kroyJoma"
+          placeholder="০" oninput="calcKroyBalance()"
+          style="font-size:24px;font-weight:800;color:var(--cash-dark);text-align:center;background:var(--cash-pale);border-color:var(--cash-mid);">
+      </div>
+
+      <!-- অবশিষ্ট + ক্যামেরা -->
+      <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;">
+          <div class="chk-label" style="color:#991b1b;font-size:17px;" id="kroyRemainLabel">🧾 মোট খরচ <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span></div>
+          <input type="number" class="inp" id="kroyRemain" readonly placeholder="০"
+            style="font-size:26px;font-weight:900;color:#1e40af;background:#eff6ff;border-color:#1e40af;text-align:center;border-width:2px;">
+        </div>
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="chk-label" style="color:#0369a1;text-align:center;font-size:13px;">📷 ছবি</div>
+          <label style="display:flex;align-items:center;justify-content:center;width:56px;height:52px;background:#dbeafe;border-radius:10px;cursor:pointer;border:2px solid #93c5fd;font-size:24px;">
+            📷
+            <input type="file" accept="image/*" capture="environment" id="kroyCamera" onchange="capturePhoto(this,'kroyPhotoPreview')" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-full" id="kroySubmitBtn" style="background:#1e40af;color:#fff;font-size:16px;padding:14px;" onclick="saveKroy()">💾 &nbsp; নগদ ক্রয় সেভ করুন</button>
+    </div>
+  </div>
+
+  <!-- কোম্পানি তালিকা -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('kroyList')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:#dbeafe;">📋</div>
+        <div>
+          <div class="sh-title" style="color:#1e40af;">কোম্পানির তালিকা</div>
+          <div class="sh-subtitle">নামের ক্রম অনুযায়ী</div>
+        </div>
+      </div>
+      <div class="sh-toggle" id="toggle-kroyList">▼</div>
+    </div>
+    <div class="section-body" id="body-kroyList">
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:var(--r-sm);padding:12px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px dashed #bfdbfe;">
+          <div style="font-size:12px;color:#1e40af;font-weight:700;">💵 মোট ক্রয়</div>
+          <div style="font-size:18px;font-weight:900;color:#1e40af;" id="kroyTotalDisplay">৳ ০</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;color:var(--baki-dark);font-weight:700;">🔴 মোট বাকি দিতে হবে</div>
+          <div style="font-size:18px;font-weight:900;color:var(--baki-dark);" id="kroyBakiDisplay">৳ ০</div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="kroyCountDisplay">০টি এন্ট্রি</div>
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="কোম্পানির নামে খুঁজুন..." oninput="filterKroyList(this.value)">
+      </div>
+      <div id="kroyEntryList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: খরচ হিসাব
+════════════════════════════════════════════════════════ -->
+<div class="page" id="page-khoroch">
+
+  <!-- এন্ট্রি সেকশন -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('khorochEntry')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:#fef3c7;">💸</div>
+        <div>
+          <div class="sh-title" style="color:#92400e;">খরচ এন্ট্রি</div>
+          <div class="sh-subtitle">নতুন খরচ যোগ করুন</div>
+        </div>
+      </div>
+      <div class="sh-toggle open" id="toggle-khorochEntry">▼</div>
+    </div>
+    <div class="section-body open" id="body-khorochEntry">
+      <div id="khorochPhotoPreview"></div>
+
+      <!-- তারিখ + ধরন -->
+      <div class="row2">
+        <div class="field" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#7c3aed;">📅 তারিখ</div>
+          <input type="date" class="inp" id="khorochDate" style="font-size:14px;font-weight:700;color:#6d28d9;">
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="chk-label" style="color:#92400e;">🏷️ খরচের ধরন <span style="color:var(--baki);">*</span></div>
+          <div class="inp-wrap">
+            <input type="text" class="inp" id="khorochType"
+              placeholder="ধরন লিখুন বা বেছে নিন..."
+              autocomplete="off" oninput="acKhorochType(this)"
+              style="font-size:15px;font-weight:700;color:#92400e;background:#fffbeb;border-color:#fde68a;border-width:2px;">
+            <div class="ac-list" id="ac-khorochType" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- বিবরণ -->
+      <div class="field" style="margin-bottom:10px;">
+        <div class="chk-label" style="color:#b45309;font-size:16px;">📝 খরচের বিবরণ <span style="color:var(--baki);">*</span></div>
+        <div class="inp-wrap">
+          <input type="text" class="inp" id="khorochDesc" placeholder="খরচের বিবরণ লিখুন..."
+            autocomplete="off" oninput="acKhorochDesc(this)"
+            style="font-size:16px;font-weight:700;color:#92400e;background:#fffbeb;border-color:#fde68a;border-width:2px;">
+          <div class="ac-list" id="ac-khorochDesc" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- টাকা + ক্যামেরা -->
+      <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;">
+          <div class="chk-label" style="color:#92400e;font-size:18px;">💵 টাকা <span style="color:var(--baki);">*</span></div>
+          <input type="number" class="inp" id="khorochAmount"
+            placeholder="০"
+            style="font-size:32px;font-weight:900;color:#92400e;text-align:center;background:#fffbeb;border-color:#fde68a;border-width:2px;">
+        </div>
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="chk-label" style="color:#0369a1;text-align:center;font-size:13px;">📷 ছবি</div>
+          <label style="display:flex;align-items:center;justify-content:center;width:56px;height:52px;background:#dbeafe;border-radius:10px;cursor:pointer;border:2px solid #93c5fd;font-size:24px;">
+            📷
+            <input type="file" accept="image/*" capture="environment" id="khorochCamera" onchange="capturePhoto(this,'khorochPhotoPreview')" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-full" style="background:#d97706;color:#fff;font-size:16px;padding:14px;" onclick="saveKhoroch()">💾 &nbsp; খরচ এন্ট্রি সেভ করুন</button>
+    </div>
+  </div>
+
+  <!-- খরচ তালিকা -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection('khorochList')">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:#fef3c7;">📋</div>
+        <div>
+          <div class="sh-title" style="color:#92400e;">খরচের তালিকা</div>
+          <div class="sh-subtitle">মাস অনুযায়ী সারসংক্ষেপ</div>
+        </div>
+      </div>
+      <div class="sh-toggle" id="toggle-khorochList">▼</div>
+    </div>
+    <div class="section-body" id="body-khorochList">
+
+      <!-- মাসিক সারসংক্ষেপ -->
+      <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:var(--r-sm);padding:12px;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:800;color:#92400e;margin-bottom:8px;">📊 এই মাসের খরচ</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;" id="khorochMonthlyGrid">
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px dashed #fde68a;">
+          <div style="font-size:14px;font-weight:800;color:#92400e;">মোট খরচ</div>
+          <div style="font-size:20px;font-weight:900;color:#92400e;" id="khorochTotalDisplay">৳ ০</div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="বিবরণ বা তারিখ দিয়ে খুঁজুন..." oninput="filterKhorochList(this.value)">
+      </div>
+      <div id="khorochEntryList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="bn-btn active" id="bn-cash" onclick="switchTab('cash')">
+    <span class="bn-icon">💚</span><span>নগদ</span>
+  </button>
+  <button class="bn-btn" id="bn-baki" onclick="switchTab('baki')">
+    <span class="bn-icon">❤️</span><span>বাকি</span>
+  </button>
+  <button class="bn-btn" id="bn-kroy" onclick="switchTab('kroy')">
+    <span class="bn-icon">🛒</span><span>ক্রয়</span>
+  </button>
+  <button class="bn-btn" id="bn-khoroch" onclick="switchTab('khoroch')">
+    <span class="bn-icon">💸</span><span>খরচ</span>
+  </button>
+  <button class="bn-btn" onclick="openReportModal()">
+    <span class="bn-icon">📊</span><span>রিপোর্ট</span>
+  </button>
+</div>
+
+<!-- ══ MODAL: প্রারম্ভিক ক্যাশ ═══════════════════════════ -->
+<div class="modal-bg" id="modal-opening">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">💜 প্রারম্ভিক ক্যাশ সেট করুন</div>
+      <button class="modal-close" onclick="closeModal('modal-opening')">✕</button>
+    </div>
+    <div class="field f-date">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">📅 তারিখ</span></div>
+      <input type="date" class="inp" id="openingDate">
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <div class="field-label"><div class="fl-dot" style="background:#7c3aed;"></div><span style="font-size:15px;font-weight:800;color:#6d28d9;">💰 হাতে থাকা টাকা</span></div>
+      <input type="number" class="inp" id="openingAmount" placeholder="০" style="font-size:28px;font-weight:900;color:#7c3aed;text-align:right;">
+    </div>
+    <button class="btn btn-purple btn-full" onclick="saveOpening()">💾 সেভ করুন</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: কাস্টমার যোগ ═══════════════════════════════ -->
+<div class="modal-bg" id="modal-addCustomer">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">👤 নতুন কাস্টমার যোগ করুন</div>
+      <button class="modal-close" onclick="closeModal('modal-addCustomer')">✕</button>
+    </div>
+    <div class="btn-row">
+      <button class="extra-btn btn-cont" onclick="pickContact('newCustName','newCustPhone','newCustAddr')">📱 কন্টাক্ট থেকে নিন</button>
+    </div>
+    <div class="field f-name">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">👤 নাম</span><span class="fl-req">*</span></div>
+      <input type="text" class="inp baki-focus" id="newCustName" placeholder="গ্রাহকের নাম লিখুন">
+    </div>
+    <div class="row2">
+      <div class="field f-phone">
+        <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">📱 মোবাইল</span><span class="fl-req">*</span></div>
+        <input type="tel" class="inp baki-focus" id="newCustPhone" placeholder="০১XXXXXXXXX">
+      </div>
+      <div class="field f-addr">
+        <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">📍 ঠিকানা</span></div>
+        <input type="text" class="inp baki-focus" id="newCustAddr" placeholder="গ্রাম/পাড়া">
+      </div>
+    </div>
+    <button class="btn btn-baki btn-full" onclick="addCustomer()">✅ কাস্টমার যোগ করুন</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: কাস্টমার বেছে নিন ══════════════════════════ -->
+<div class="modal-bg" id="modal-custPicker">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">👥 গ্রাহক বেছে নিন</div>
+      <button class="modal-close" onclick="closeModal('modal-custPicker')">✕</button>
+    </div>
+    <div class="search-box" style="margin-bottom:12px;">
+      <span>🔍</span>
+      <input type="text" placeholder="নাম দিয়ে খুঁজুন..." oninput="filterPickerList(this.value)" id="pickerSearch">
+    </div>
+    <div id="pickerList"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: কাস্টমার বিস্তারিত ════════════════════════ -->
+<div class="modal-bg" id="modal-custDetail">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="custDetailTitle">গ্রাহক বিবরণ</div>
+      <button class="modal-close" onclick="closeModal('modal-custDetail')">✕</button>
+    </div>
+    <div id="custDetailContent"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: মেমো / বিল ═══════════════════════════════ -->
+<div class="modal-bg" id="modal-memo">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="memoTitle">📄 মেমো / বিল</div>
+      <button class="modal-close" onclick="closeModal('modal-memo')">✕</button>
+    </div>
+
+    <!-- নোট ফিল্ড -->
+    <div class="field" style="margin-bottom:12px;">
+      <div class="field-label"><div class="fl-dot" style="background:var(--gold);"></div><span style="font-size:14px;font-weight:800;color:#b45309;">📝 মেমোতে নোট যোগ করুন</span><span class="fl-opt">ঐচ্ছিক</span></div>
+      <input type="text" class="inp" id="memoNote" placeholder="যেকোনো তথ্য বা নির্দেশনা লিখুন...">
+    </div>
+
+    <div class="bill-paper" id="billContent"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+      <button class="btn btn-cash" onclick="printMemo()" style="font-size:13px;">🖨️ প্রিন্ট</button>
+      <button class="btn btn-dark" onclick="shareMemoWA()" style="font-size:13px; background:#25d366;">📲 WhatsApp</button>
+      <button class="btn btn-dark" onclick="shareMemoIMO()" style="font-size:13px; background:#7b5ea7;">💬 IMO</button>
+    </div>
+    <button class="btn btn-gold btn-full" style="margin-top:8px;" onclick="generateMemo()">🔄 নোট দিয়ে আপডেট করুন</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: রিপোর্ট ═══════════════════════════════════ -->
+<div class="modal-bg" id="modal-report">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">📊 রিপোর্ট ও সেটিংস</div>
+      <button class="modal-close" onclick="closeModal('modal-report')">✕</button>
+    </div>
+
+    <!-- ══ মোবাইলে ব্যবহার গাইড ══ -->
+    <div style="background:linear-gradient(120deg,#fffbeb,#fef9c3); border:2px solid #fde68a; border-radius:12px; padding:13px; margin-bottom:12px;">
+      <div style="font-size:14px; font-weight:900; color:#92400e; margin-bottom:8px;">📱 মোবাইলে সঠিকভাবে ব্যবহার করুন</div>
+      <div style="font-size:12px; color:#78350f; line-height:1.8;">
+        ১. ফাইলটি ডাউনলোড করুন<br>
+        ২. <strong>Chrome Browser</strong> খুলুন<br>
+        ৩. Address bar এ লিখুন: <strong>file:///sdcard/Download/bikroy_hisab.html</strong><br>
+        ৪. অথবা Files অ্যাপ → Downloads → ফাইলে ট্যাপ করুন → Chrome দিয়ে খুলুন
+      </div>
+      <button class="btn btn-gold btn-full" style="margin-top:10px; font-size:13px;" onclick="installApp()">
+        🏠 হোম স্ক্রিনে অ্যাপ হিসেবে যোগ করুন
+      </button>
+    </div>
+
+    <!-- ══ ডেটা সুরক্ষা ══ -->
+    <div style="background:#f0fdf4; border:2px solid var(--cash-light); border-radius:12px; padding:13px; margin-bottom:12px;">
+      <div style="font-size:14px; font-weight:900; color:var(--cash-dark); margin-bottom:4px;">🔒 হিসাব সুরক্ষা — মোবাইল হারালেও নিরাপদ</div>
+      <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">নিচের যেকোনো উপায়ে নিয়মিত ব্যাকআপ নিন</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button class="btn btn-cash" onclick="downloadBackup()" style="font-size:12px; flex-direction:column; gap:2px; padding:10px 6px;">
+          <span style="font-size:20px;">⬇️</span> ফাইল ব্যাকআপ
+        </button>
+        <button class="btn" onclick="emailBackup()" style="font-size:12px; flex-direction:column; gap:2px; padding:10px 6px; background:#ea4335; color:#fff;">
+          <span style="font-size:20px;">📧</span> ইমেইল ব্যাকআপ
+        </button>
+        <button class="btn" onclick="driveShare()" style="font-size:12px; flex-direction:column; gap:2px; padding:10px 6px; background:#4285f4; color:#fff;">
+          <span style="font-size:20px;">☁️</span> Google Drive
+        </button>
+        <button class="btn btn-ghost" onclick="document.getElementById('restoreFile').click()" style="font-size:12px; flex-direction:column; gap:2px; padding:10px 6px; border:2px solid var(--border);">
+          <span style="font-size:20px;">⬆️</span> রিস্টোর করুন
+        </button>
+      </div>
+      <input type="file" id="restoreFile" accept=".json" style="display:none;" onchange="restoreBackup(this)">
+
+      <!-- ইমেইল সেটিং -->
+      <div style="margin-top:10px; padding:10px; background:#fff; border-radius:8px; border:1px solid var(--border);">
+        <div style="font-size:12px; font-weight:800; color:var(--ink-mid); margin-bottom:6px;">📧 আপনার ইমেইল ঠিকানা সেট করুন</div>
+        <div style="display:flex; gap:8px;">
+          <input type="email" class="inp" id="backupEmail" placeholder="yourname@gmail.com"
+            style="font-size:13px; flex:1; padding:8px 12px;"
+            value="" oninput="saveEmail(this.value)">
+          <button class="btn btn-cash" onclick="emailBackup()" style="flex-shrink:0; padding:8px 12px; font-size:12px;">পাঠান</button>
+        </div>
+        <div style="font-size:10px; color:var(--muted); margin-top:4px;">* প্রতিদিন হিসাব শেষে ইমেইল করে রাখুন</div>
+      </div>
+
+      <!-- শেষ ব্যাকআপ সময় -->
+      <div style="margin-top:8px; text-align:center; font-size:11px; color:var(--muted);" id="lastBackupInfo">
+        শেষ ব্যাকআপ: এখনো নেওয়া হয়নি
+      </div>
+    </div>
+
+    <div class="row2" style="margin-bottom:12px;">
+      <div class="field" style="margin-bottom:0;">
+        <div style="font-size:13px;font-weight:800;color:#6d28d9;margin-bottom:5px;">📅 শুরুর তারিখ</div>
+        <input type="date" class="inp" id="rptFrom">
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <div style="font-size:13px;font-weight:800;color:#6d28d9;margin-bottom:5px;">📅 শেষ তারিখ</div>
+        <input type="date" class="inp" id="rptTo">
+      </div>
+    </div>
+    <button class="btn btn-dark btn-full" style="margin-bottom:12px;" onclick="generateReport()">📊 রিপোর্ট তৈরি করুন</button>
+    <div id="reportContent"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: এন্ট্রি এডিট ═════════════════════════════ -->
+<div class="modal-bg" id="modal-edit">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="editModalTitle">✏️ এন্ট্রি এডিট করুন</div>
+      <button class="modal-close" onclick="closeModal('modal-edit')">✕</button>
+    </div>
+    <div id="editModalContent"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: পেমেন্ট আদায় ══════════════════════════════ -->
+<div class="modal-bg" id="modal-payment">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">💰 পেমেন্ট আদায়</div>
+      <button class="modal-close" onclick="closeModal('modal-payment')">✕</button>
+    </div>
+    <div id="paymentContent"></div>
+  </div>
+</div>
+
+
+<script>
+// ════════════════════════════════════════════
+//  DATA LAYER
+// ════════════════════════════════════════════
+let DB = { cash:[], baki:[], customers:[], opening:[], kroy:[], khoroch:[], companies:[], khorochTypes:[] };
+let currentMemoType = 'cash';
+let currentMemoCustomerId = null;
+
+function saveDB()  { localStorage.setItem('bismillah_v2', JSON.stringify(DB)); }
+function loadDB()  { const d=localStorage.getItem('bismillah_v2'); if(d){ DB=JSON.parse(d); if(!DB.kroy)DB.kroy=[]; if(!DB.khoroch)DB.khoroch=[]; if(!DB.companies)DB.companies=[]; if(!DB.khorochTypes)DB.khorochTypes=[]; } }
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+function init() {
+  loadDB();
+  const td = today();
+  document.getElementById('headerDate').textContent = fmtDate(td);
+  ['cashDate','bakiDate','openingDate','kroyDate','khorochDate'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=td;
+  });
+  const first = td.slice(0,8)+'01';
+  const rf=document.getElementById('rptFrom'); if(rf) rf.value=first;
+  const rt=document.getElementById('rptTo');   if(rt) rt.value=td;
+
+  // opening display
+  const op = DB.opening.find(o=>o.date===td);
+  document.getElementById('openingDisplay').textContent = op ? taka(op.amount) : '৳ ০';
+
+  renderCashList();
+  renderBakiList();
+  renderKroyList();
+  renderKhorochList();
+  renderCompanyList();
+  loadCustomKhorochTypes();
+}
+
+// ════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════
+function today()  { return new Date().toISOString().split('T')[0]; }
+function genId()  { return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function taka(n)  { return '৳ '+(parseFloat(n)||0).toLocaleString('en-IN'); }
+function fmtDate(s) {
+  if(!s) return '';
+  const d=new Date(s);
+  const M=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  return `${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()}`;
+}
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ════════════════════════════════════════════
+//  TAB SWITCH
+// ════════════════════════════════════════════
+function switchTab(tab) {
+  ['cash','baki','kroy','khoroch'].forEach(t=>{
+    document.getElementById('page-'+t).classList.remove('active');
+    const tb=document.getElementById('tab-'+t); if(tb) tb.classList.remove('active');
+    const bn=document.getElementById('bn-'+t); if(bn){bn.classList.remove('active');bn.classList.remove('baki-active');}
+  });
+  document.getElementById('page-'+tab).classList.add('active');
+  const tb=document.getElementById('tab-'+tab); if(tb) tb.classList.add('active');
+  const bn=document.getElementById('bn-'+tab);
+  if(bn){ bn.classList.add('active'); if(tab==='baki') bn.classList.add('baki-active'); }
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════════════
+//  SECTION TOGGLE
+// ════════════════════════════════════════════
+function toggleSection(id) {
+  const body=document.getElementById('body-'+id);
+  const tog=document.getElementById('toggle-'+id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  body.style.display = isOpen ? 'none' : 'block';
+  if(tog) tog.classList.toggle('open', !isOpen);
+}
+
+// ════════════════════════════════════════════
+//  OPENING CASH
+// ════════════════════════════════════════════
+function openOpeningModal() {
+  document.getElementById('openingDate').value = today();
+  const op=DB.opening.find(o=>o.date===today());
+  if(op) document.getElementById('openingAmount').value=op.amount;
+  openModal('modal-opening');
+}
+function saveOpening() {
+  const date=document.getElementById('openingDate').value;
+  const amount=parseFloat(document.getElementById('openingAmount').value)||0;
+  const idx=DB.opening.findIndex(o=>o.date===date);
+  if(idx>=0) DB.opening[idx].amount=amount;
+  else DB.opening.push({id:genId(),date,amount});
+  saveDB();
+  document.getElementById('openingDisplay').textContent=taka(amount);
+  renderCashList(); // refresh grand total
+  closeModal('modal-opening');
+  toast('✅ প্রারম্ভিক ক্যাশ সেভ হয়েছে!');
+}
+
+// ════════════════════════════════════════════
+//  AUTOCOMPLETE
+// ════════════════════════════════════════════
+function getDescList() {
+  const set=new Set(); DB.cash.forEach(e=>{ if(e.desc) set.add(e.desc); });
+  return [...set];
+}
+function getNameList() {
+  const set=new Set();
+  DB.customers.forEach(c=>set.add(c.name));
+  DB.baki.forEach(e=>{ if(e.name) set.add(e.name); });
+  return [...set];
+}
+function getAddrList() {
+  const set=new Set(); DB.baki.forEach(e=>{ if(e.addr) set.add(e.addr); }); DB.customers.forEach(c=>{ if(c.addr) set.add(c.addr); });
+  return [...set];
+}
+
+function showAC(listId, items, onSelect) {
+  const el=document.getElementById(listId);
+  if(!items.length){ el.style.display='none'; return; }
+  el.innerHTML=items.map(item=>`<div class="ac-item" onclick="${onSelect}('${item.replace(/'/g,"\\'")}')">
+    <span>🔍</span><span>${item}</span></div>`).join('');
+  el.style.display='block';
+}
+function hideAC(listId){ const el=document.getElementById(listId); if(el) el.style.display='none'; }
+
+function acCashDesc(inp) {
+  const v=inp.value.toLowerCase();
+  if(!v){ hideAC('ac-cashDesc'); return; }
+  const hits=getDescList().filter(d=>d.toLowerCase().includes(v)).slice(0,6);
+  showAC('ac-cashDesc', hits, 'setCashDesc');
+}
+function setCashDesc(val){
+  document.getElementById('cashDesc').value=val;
+  hideAC('ac-cashDesc');
+}
+
+function acBakiName(inp) {
+  const v=inp.value.toLowerCase();
+  if(!v){ hideAC('ac-bakiName'); return; }
+  const hits=getNameList().filter(n=>n.toLowerCase().includes(v)).slice(0,6);
+  if(!hits.length){ hideAC('ac-bakiName'); return; }
+  const el=document.getElementById('ac-bakiName');
+  el.innerHTML=hits.map(name=>{
+    const c=DB.customers.find(x=>x.name===name);
+    return `<div class="ac-item" onclick="selectBakiCustomer('${name.replace(/'/g,"\\'")}')">
+      <span>👤</span><span>${name}</span>
+      ${c&&c.phone?`<span style="color:var(--muted);font-size:11px;">${c.phone}</span>`:''}
+    </div>`;
+  }).join('');
+  el.style.display='block';
+}
+function selectBakiCustomer(name) {
+  document.getElementById('bakiName').value=name;
+  hideAC('ac-bakiName');
+  const c=DB.customers.find(x=>x.name===name);
+  if(c){
+    if(c.phone) document.getElementById('bakiPhone').value=c.phone;
+    if(c.addr)  document.getElementById('bakiAddr').value=c.addr;
+  }
+  loadPrevBaki();
+}
+
+function acAddr(inp){
+  const v=inp.value.toLowerCase();
+  if(!v){ hideAC('ac-bakiAddr'); return; }
+  const hits=getAddrList().filter(a=>a.toLowerCase().includes(v)).slice(0,5);
+  showAC('ac-bakiAddr', hits, 'setAddr');
+}
+function setAddr(val){ document.getElementById('bakiAddr').value=val; hideAC('ac-bakiAddr'); }
+
+// ════════════════════════════════════════════
+//  CONTACT PICKER
+// ════════════════════════════════════════════
+async function pickContact(nameId, phoneId, addrId) {
+  if(!('contacts' in navigator)){
+    toast('Chrome ব্রাউজারে কন্টাক্ট পিকার কাজ করে');
+    return;
+  }
+  try {
+    const [c]=await navigator.contacts.select(['name','tel'],{multiple:false});
+    if(c){
+      const n=document.getElementById(nameId); if(n) n.value=c.name?.[0]||'';
+      const p=document.getElementById(phoneId); if(p) p.value=c.tel?.[0]||'';
+      if(nameId==='bakiName') loadPrevBaki();
+    }
+  } catch(e){}
+}
+
+// ════════════════════════════════════════════
+//  CAMERA
+// ════════════════════════════════════════════
+function capturePhoto(input, previewId) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const div=document.getElementById(previewId);
+    div.innerHTML=`<div style="position:relative;margin-bottom:12px;">
+      <img src="${e.target.result}" class="ei-photo" style="width:100%;border-radius:10px;max-height:160px;object-fit:cover;">
+      <button onclick="this.parentElement.remove();document.getElementById('${input.id}').value=''"
+        style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:14px;cursor:pointer;">✕</button>
+    </div>`;
+    // store temporarily
+    input._photoData = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ════════════════════════════════════════════
+//  CALC
+// ════════════════════════════════════════════
+function calcCashTotal() {
+  const a=parseFloat(document.getElementById('cashAmount').value)||0;
+  const v=parseFloat(document.getElementById('cashVisit').value)||0;
+  document.getElementById('cashTotal').value=a+v||'';
+}
+
+function loadPrevBaki() {
+  const name=document.getElementById('bakiName').value.trim();
+  if(!name){ document.getElementById('bakiPrev').value=''; calcBakiBalance(); return; }
+  const prev = DB.baki.filter(e=>e.name.toLowerCase()===name.toLowerCase())
+    .reduce((s,e)=>s+(e.remain||0),0);
+  // use last entry remain
+  const entries = DB.baki.filter(e=>e.name.toLowerCase()===name.toLowerCase()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastRemain = entries.length>0 ? (entries[0].remain||0) : 0;
+  document.getElementById('bakiPrev').value=lastRemain||'';
+  calcBakiBalance();
+}
+
+function calcBakiBalance() {
+  const todayBaki=parseFloat(document.getElementById('bakiToday').value)||0;
+  const prev=parseFloat(document.getElementById('bakiPrev').value)||0;
+  const joma=parseFloat(document.getElementById('bakiJoma').value)||0;
+  const remain=Math.max(0, prev+todayBaki-joma);
+  document.getElementById('bakiRemain').value=remain||'';
+}
+
+// ════════════════════════════════════════════
+//  SAVE
+// ════════════════════════════════════════════
+function saveCash() {
+  const amount=parseFloat(document.getElementById('cashAmount').value)||0;
+  if(!amount){ toast('টাকার পরিমাণ দিন!'); return; }
+  const cam=document.getElementById('cashCamera');
+  const entry={
+    id:genId(), type:'cash',
+    date:document.getElementById('cashDate').value,
+    desc:document.getElementById('cashDesc').value.trim()||'নগদ বিক্রয়',
+    amount, visit:parseFloat(document.getElementById('cashVisit').value)||0,
+    total:(parseFloat(document.getElementById('cashTotal').value)||amount),
+    photo:cam._photoData||'',
+    createdAt:new Date().toISOString()
+  };
+  DB.cash.unshift(entry);
+  saveDB(); renderCashList();
+  // reset
+  document.getElementById('cashDesc').value='';
+  document.getElementById('cashAmount').value='';
+  document.getElementById('cashVisit').value='';
+  document.getElementById('cashTotal').value='';
+  document.getElementById('cashPhotoPreview').innerHTML='';
+  cam._photoData=''; cam.value='';
+  toast('✅ নগদ বিক্রয় সেভ হয়েছে!');
+}
+
+function saveBaki() {
+  const name=document.getElementById('bakiName').value.trim();
+  const phone=document.getElementById('bakiPhone').value.trim();
+  const todayBaki=parseFloat(document.getElementById('bakiToday').value)||0;
+  if(!name){ toast('গ্রাহকের নাম দিন!'); return; }
+  if(!phone){ toast('মোবাইল নম্বর দিন!'); return; }
+  if(!todayBaki){ toast('আজকের বাকির পরিমাণ দিন!'); return; }
+
+  const entry={
+    id:genId(), type:'baki',
+    date:document.getElementById('bakiDate').value,
+    name, phone, addr:document.getElementById('bakiAddr').value.trim(),
+    todayBaki,
+    prev:parseFloat(document.getElementById('bakiPrev').value)||0,
+    joma:parseFloat(document.getElementById('bakiJoma').value)||0,
+    remain:parseFloat(document.getElementById('bakiRemain').value)||0,
+    photo: document.getElementById('bakiCamera')._photoData||'',
+    createdAt:new Date().toISOString()
+  };
+  DB.baki.unshift(entry);
+
+  // update or create customer
+  let cust=DB.customers.find(c=>c.name.toLowerCase()===name.toLowerCase());
+  if(!cust){
+    cust={id:genId(),name,phone,addr:entry.addr};
+    DB.customers.push(cust);
+  } else {
+    if(phone) cust.phone=phone;
+    if(entry.addr) cust.addr=entry.addr;
+  }
+
+  saveDB(); renderBakiList();
+  ['bakiName','bakiPhone','bakiAddr','bakiToday','bakiPrev','bakiJoma','bakiRemain'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('bakiPhotoPreview').innerHTML='';
+  const bc=document.getElementById('bakiCamera'); bc._photoData=''; bc.value='';
+  toast('✅ বাকি এন্ট্রি সেভ হয়েছে!');
+}
+
+// ════════════════════════════════════════════
+//  CUSTOMERS
+// ════════════════════════════════════════════
+function openAddCustomerModal() {
+  ['newCustName','newCustPhone','newCustAddr'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-addCustomer');
+}
+function addCustomer() {
+  const name=document.getElementById('newCustName').value.trim();
+  const phone=document.getElementById('newCustPhone').value.trim();
+  if(!name){ toast('নাম দিন!'); return; }
+  if(!phone){ toast('মোবাইল নম্বর দিন!'); return; }
+  if(DB.customers.find(c=>c.name.toLowerCase()===name.toLowerCase())){
+    toast('এই নামে কাস্টমার আছে!'); return;
+  }
+  DB.customers.push({id:genId(),name,phone,addr:document.getElementById('newCustAddr').value.trim()});
+  saveDB(); renderBakiList();
+  closeModal('modal-addCustomer');
+  toast('✅ কাস্টমার যোগ হয়েছে!');
+}
+
+// ════════════════════════════════════════════
+//  RENDER CASH LIST
+// ════════════════════════════════════════════
+function renderCashList(filter='') {
+  let data=DB.cash;
+  if(filter) data=data.filter(e=>(e.desc||'').toLowerCase().includes(filter.toLowerCase())||e.date.includes(filter));
+  const total=data.reduce((s,e)=>s+(e.total||0),0);
+  // Opening cash for today
+  const op=DB.opening.find(o=>o.date===today());
+  const opAmt=op?(op.amount||0):0;
+  const grand=opAmt+total;
+  document.getElementById('cashTotalDisplay').textContent=taka(total);
+  document.getElementById('cashCountDisplay').textContent=`${data.length}টি এন্ট্রি`;
+  const opEl=document.getElementById('openingInSummary'); if(opEl) opEl.textContent=taka(opAmt);
+  const gtEl=document.getElementById('cashGrandTotal'); if(gtEl) gtEl.textContent=taka(grand);
+  const list=document.getElementById('cashEntryList');
+  if(!data.length){
+    list.innerHTML='<div class="empty"><div class="e-icon">💚</div><p>কোনো নগদ বিক্রয় নেই</p></div>';
+    return;
+  }
+  list.innerHTML=data.map(e=>`
+    <div class="entry-item">
+      <div class="ei-top">
+        <div class="ei-main">
+          <div class="ei-title">${e.desc||'নগদ বিক্রয়'}</div>
+          <div class="ei-meta">
+            <span>📅 ${fmtDate(e.date)}</span>
+            ${e.visit?`<span>🩺 ভিজিট: ${taka(e.visit)}</span>`:''}
+          </div>
+        </div>
+        <div class="ei-right">
+          <div class="ei-amount" style="color:var(--cash-dark);">${taka(e.total)}</div>
+          <span class="ei-badge badge-cash">নগদ</span>
+        </div>
+      </div>
+      ${e.photo?`<img src="${e.photo}" class="ei-photo">`:''}
+      <div class="ei-actions">
+        <button class="btn btn-sm btn-cash" onclick="showSingleBill('cash','${e.id}')">🧾 বিল</button>
+        <button class="btn btn-sm btn-ghost" onclick="editCash('${e.id}')">✏️ এডিট</button>
+        <button class="btn btn-sm btn-outline" onclick="deleteEntry('cash','${e.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function filterCashList(v){ renderCashList(v); }
+
+// ════════════════════════════════════════════
+//  RENDER BAKI LIST — name grouped A-Z
+// ════════════════════════════════════════════
+function renderBakiList(filter='') {
+  // Build customer summary
+  let custs=[...DB.customers];
+  if(filter) custs=custs.filter(c=>c.name.toLowerCase().includes(filter.toLowerCase()));
+  custs.sort((a,b)=>a.name.localeCompare(b.name,'bn'));
+
+  // total due across all customers
+  const allRemain = DB.customers.map(c=>{
+    const entries=DB.baki.filter(e=>e.name.toLowerCase()===c.name.toLowerCase())
+      .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    return entries.length>0?(entries[0].remain||0):0;
+  }).reduce((s,v)=>s+v,0);
+  document.getElementById('bakiTotalDisplay').textContent=taka(allRemain);
+  document.getElementById('bakiCountDisplay').textContent=`${DB.customers.length} জন গ্রাহক`;
+
+  const list=document.getElementById('bakiCustomerList');
+  if(!custs.length){
+    list.innerHTML='<div class="empty"><div class="e-icon">❤️</div><p>কোনো বাকি গ্রাহক নেই</p></div>';
+    return;
+  }
+
+  // group by first letter
+  const groups={};
+  custs.forEach(c=>{
+    const letter=c.name.slice(0,1).toUpperCase();
+    if(!groups[letter]) groups[letter]=[];
+    groups[letter].push(c);
+  });
+  const colors=['#dc2626','#2563eb','#ea580c','#7c3aed','#0891b2','#059669','#d97706','#db2777'];
+
+  list.innerHTML=Object.keys(groups).sort().map(letter=>`
+    <div class="alpha-divider">
+      <div class="alpha-circle" style="background:var(--baki);">${letter}</div>
+      <div class="alpha-line"></div>
+    </div>
+    ${groups[letter].map((c,i)=>{
+      const entries=DB.baki.filter(e=>e.name.toLowerCase()===c.name.toLowerCase())
+        .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+      const lastRemain=entries.length>0?(entries[0].remain||0):0;
+      const totalTxn=entries.length;
+      const color=colors[DB.customers.indexOf(c)%colors.length];
+      return `<div class="customer-item" onclick="openCustDetail('${c.id}')">
+        <div class="ci-top">
+          <div class="ci-avatar" style="background:${color};">${c.name.slice(0,1)}</div>
+          <div style="flex:1;">
+            <div class="ci-name">${c.name}</div>
+            <div class="ci-info">${c.phone||'নম্বর নেই'} ${c.addr?'• '+c.addr:''}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px;font-weight:900;color:${lastRemain>0?'var(--baki-dark)':'var(--cash-dark)'};">${taka(lastRemain)}</div>
+            <span class="ei-badge ${lastRemain>0?'badge-baki':'badge-paid'}">${lastRemain>0?'বাকি':'পরিশোধ'}</span>
+          </div>
+        </div>
+        <div class="ci-stats">
+          <div class="ci-stat" style="background:var(--baki-pale);">
+            <div class="csl">বাকি পাওনা</div>
+            <div class="csv" style="color:${lastRemain>0?'var(--baki-dark)':'var(--cash-dark)'};">${taka(lastRemain)}</div>
+          </div>
+          <div class="ci-stat" style="background:var(--surface);">
+            <div class="csl">লেনদেন</div>
+            <div class="csv">${totalTxn}বার</div>
+          </div>
+          <div class="ci-stat" style="background:var(--cash-pale);">
+            <div class="csl">মোট বাকি ছিল</div>
+            <div class="csv" style="color:var(--cash-dark);">${taka(entries.reduce((s,e)=>s+(e.todayBaki||0),0))}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}`).join('');
+}
+function filterBakiList(v){ renderBakiList(v); }
+
+// ════════════════════════════════════════════
+//  CUSTOMER PICKER
+// ════════════════════════════════════════════
+function openCustomerPicker(){
+  document.getElementById('pickerSearch').value='';
+  filterPickerList('');
+  openModal('modal-custPicker');
+}
+function filterPickerList(filter){
+  let custs=[...DB.customers];
+  if(filter) custs=custs.filter(c=>c.name.toLowerCase().includes(filter.toLowerCase()));
+  const el=document.getElementById('pickerList');
+  if(!custs.length){ el.innerHTML='<div class="empty"><div class="e-icon">👥</div><p>কোনো গ্রাহক নেই</p></div>'; return; }
+  el.innerHTML=custs.map(c=>`
+    <div class="customer-item" onclick="selectFromPicker('${c.id}')">
+      <div class="ci-top">
+        <div class="ci-avatar" style="background:var(--baki);">${c.name.slice(0,1)}</div>
+        <div>
+          <div class="ci-name">${c.name}</div>
+          <div class="ci-info">${c.phone||''} ${c.addr?'• '+c.addr:''}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function selectFromPicker(id){
+  const c=DB.customers.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('bakiName').value=c.name;
+  if(c.phone) document.getElementById('bakiPhone').value=c.phone;
+  if(c.addr)  document.getElementById('bakiAddr').value=c.addr;
+  closeModal('modal-custPicker');
+  loadPrevBaki();
+}
+
+// ════════════════════════════════════════════
+//  CUSTOMER DETAIL
+// ════════════════════════════════════════════
+function openCustDetail(id){
+  const c=DB.customers.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('custDetailTitle').textContent='👤 '+c.name;
+  const entries=DB.baki.filter(e=>e.name.toLowerCase()===c.name.toLowerCase())
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastRemain=entries.length>0?(entries[0].remain||0):0;
+  const totalBaki=entries.reduce((s,e)=>s+(e.todayBaki||0),0);
+  const totalJoma=entries.reduce((s,e)=>s+(e.joma||0),0);
+  let html=`
+    <!-- profile -->
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--baki-pale);border-radius:12px;margin-bottom:14px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--baki);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;">${c.name.slice(0,1)}</div>
+      <div style="flex:1;">
+        <div style="font-size:17px;font-weight:900;">${c.name}</div>
+        <div style="font-size:12px;color:var(--muted);">${c.phone||''} ${c.addr?'• '+c.addr:''}</div>
+        ${c.phone?`<div style="margin-top:5px;display:flex;gap:8px;">
+          <a href="tel:${c.phone}" style="font-size:12px;color:var(--cash-dark);font-weight:700;text-decoration:none;">📞 কল</a>
+          <a href="https://wa.me/88${c.phone}" target="_blank" style="font-size:12px;color:#25d366;font-weight:700;text-decoration:none;">💬 WhatsApp</a>
+        </div>`:''}
+      </div>
+    </div>
+    <!-- stats -->
+    <div class="cust-stats-grid">
+      <div class="cust-stat-box">
+        <div class="csb-label">বাকি পাওনা</div>
+        <div class="csb-val" style="color:${lastRemain>0?'var(--baki-dark)':'var(--cash-dark)'};">${taka(lastRemain)}</div>
+      </div>
+      <div class="cust-stat-box">
+        <div class="csb-label">মোট বাকি</div>
+        <div class="csb-val" style="color:var(--ink-mid);">${taka(totalBaki)}</div>
+      </div>
+      <div class="cust-stat-box">
+        <div class="csb-label">মোট জমা</div>
+        <div class="csb-val" style="color:var(--cash-dark);">${taka(totalJoma)}</div>
+      </div>
+    </div>
+    <!-- action buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <button class="btn btn-baki" onclick="closeModal('modal-custDetail');switchTab('baki');document.getElementById('bakiName').value='${c.name.replace(/'/g,"\\'")}';loadPrevBaki();">➕ নতুন এন্ট্রি</button>
+      <button class="btn btn-cash" onclick="collectPayment('${c.id}')">💰 পেমেন্ট নিন</button>
+      <button class="btn btn-gold" onclick="closeModal('modal-custDetail');openMemoModal('baki','${c.id}')">🧾 বিল/মেমো</button>
+      <button class="btn btn-ghost" onclick="deleteCustomer('${c.id}')">🗑️ মুছুন</button>
+    </div>
+    <!-- history -->
+    <div style="font-weight:800;font-size:14px;margin-bottom:8px;color:var(--baki-dark);">📋 লেনদেন ইতিহাস</div>`;
+  if(!entries.length){
+    html+='<div class="empty"><p>কোনো লেনদেন নেই</p></div>';
+  } else {
+    html+=entries.map(e=>`
+      <div style="padding:10px 12px;background:${e.remain>0?'var(--baki-pale)':'var(--cash-pale)'};border-radius:10px;margin-bottom:7px;border-left:3px solid ${e.remain>0?'var(--baki)':'var(--cash)'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:700;">${fmtDate(e.date)}</div>
+            <div style="font-size:11px;color:var(--muted);">বাকি: ${taka(e.todayBaki)} | জমা: ${taka(e.joma)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:900;color:${e.remain>0?'var(--baki-dark)':'var(--cash-dark)'};">${taka(e.remain)}</div>
+            <span class="ei-badge ${e.remain>0?'badge-baki':'badge-paid'}">${e.remain>0?'বাকি':'পরিশোধ'}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:7px;">
+          <button class="btn btn-sm btn-baki" onclick="showSingleBill('baki','${e.id}')">🧾 বিল</button>
+          ${e.remain>0?`<button class="btn btn-sm btn-cash" onclick="collectFromEntry('baki','${e.id}')">💰 আদায়</button>`:''}
+          <button class="btn btn-sm btn-outline" onclick="deleteEntry('baki','${e.id}');renderBakiList();openCustDetail('${c.id}')">🗑️</button>
+        </div>
+        ${e.photo?`<img src="${e.photo}" class="ei-photo">`:''}
+      </div>`).join('');
+  }
+  document.getElementById('custDetailContent').innerHTML=html;
+  openModal('modal-custDetail');
+}
+
+// ════════════════════════════════════════════
+//  PAYMENT COLLECT
+// ════════════════════════════════════════════
+function collectPayment(custId){
+  const c=DB.customers.find(x=>x.id===custId);
+  if(!c) return;
+  const entries=DB.baki.filter(e=>e.name.toLowerCase()===c.name.toLowerCase())
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastRemain=entries.length>0?(entries[0].remain||0):0;
+  document.getElementById('paymentContent').innerHTML=`
+    <div style="padding:13px;background:var(--baki-pale);border-radius:10px;margin-bottom:14px;">
+      <div style="font-weight:800;font-size:15px;">${c.name}</div>
+      <div style="font-size:13px;color:var(--muted);">${c.phone||''}</div>
+      <div style="font-size:22px;font-weight:900;color:var(--baki-dark);margin-top:6px;">${taka(lastRemain)} বাকি</div>
+    </div>
+    <div class="field f-joma">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">💚 আজকের জমা</span></div>
+      <input type="number" class="inp" id="collectAmount" placeholder="০" max="${lastRemain}" style="font-size:24px;font-weight:900;color:var(--cash-dark);">
+    </div>
+    <div class="field f-date">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">📅 তারিখ</span></div>
+      <input type="date" class="inp" id="collectDate" value="${today()}">
+    </div>
+    <button class="btn btn-cash btn-full" onclick="confirmPayment('${custId}')">✅ পেমেন্ট নিশ্চিত করুন</button>`;
+  closeModal('modal-custDetail');
+  openModal('modal-payment');
+}
+function collectFromEntry(type, id){
+  const e=DB[type].find(x=>x.id===id);
+  if(!e||!e.remain) return;
+  document.getElementById('paymentContent').innerHTML=`
+    <div style="padding:13px;background:var(--baki-pale);border-radius:10px;margin-bottom:14px;">
+      <div style="font-weight:800;">${e.name}</div>
+      <div style="font-size:22px;font-weight:900;color:var(--baki-dark);margin-top:4px;">${taka(e.remain)} বাকি</div>
+    </div>
+    <div class="field f-joma">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">💚 আদায়ের পরিমাণ</span></div>
+      <input type="number" class="inp" id="collectAmount" placeholder="০" style="font-size:24px;font-weight:900;color:var(--cash-dark);">
+    </div>
+    <div class="field f-date">
+      <div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">📅 তারিখ</span></div>
+      <input type="date" class="inp" id="collectDate" value="${today()}">
+    </div>
+    <button class="btn btn-cash btn-full" onclick="confirmEntryPayment('${type}','${id}')">✅ নিশ্চিত করুন</button>`;
+  openModal('modal-payment');
+}
+function confirmPayment(custId){
+  const c=DB.customers.find(x=>x.id===custId);
+  const paid=parseFloat(document.getElementById('collectAmount').value)||0;
+  if(!paid){ toast('পরিমাণ দিন!'); return; }
+  // add a new baki entry with joma
+  const entries=DB.baki.filter(e=>e.name.toLowerCase()===c.name.toLowerCase())
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastRemain=entries.length>0?(entries[0].remain||0):0;
+  const newRemain=Math.max(0,lastRemain-paid);
+  const entry={
+    id:genId(), type:'baki',
+    date:document.getElementById('collectDate').value,
+    name:c.name, phone:c.phone, addr:c.addr,
+    todayBaki:0, prev:lastRemain, joma:paid, remain:newRemain,
+    photo:'', createdAt:new Date().toISOString()
+  };
+  DB.baki.unshift(entry);
+  saveDB(); renderBakiList();
+  closeModal('modal-payment');
+  toast(`✅ ${taka(paid)} আদায় হয়েছে!`);
+}
+function confirmEntryPayment(type,id){
+  const paid=parseFloat(document.getElementById('collectAmount').value)||0;
+  if(!paid){ toast('পরিমাণ দিন!'); return; }
+  const e=DB[type].find(x=>x.id===id);
+  if(!e) return;
+  e.joma=(e.joma||0)+paid;
+  e.remain=Math.max(0,(e.remain||0)-paid);
+  saveDB(); renderBakiList();
+  closeModal('modal-payment');
+  toast(`✅ ${taka(paid)} আদায় হয়েছে!`);
+}
+
+// ════════════════════════════════════════════
+//  EDIT CASH
+// ════════════════════════════════════════════
+function editCash(id){
+  const e=DB.cash.find(x=>x.id===id);
+  if(!e) return;
+  document.getElementById('editModalTitle').textContent='✏️ নগদ বিক্রয় এডিট';
+  document.getElementById('editModalContent').innerHTML=`
+    <div class="field f-date"><div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">📅 তারিখ</span></div>
+      <input type="date" class="inp" id="ed-date" value="${e.date}"></div>
+    <div class="field f-desc"><div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:800;">📝 বিবরণ</span></div>
+      <input type="text" class="inp" id="ed-desc" value="${e.desc||''}"></div>
+    <div class="row2">
+      <div class="field f-money"><div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">💵 টাকা</span></div>
+        <input type="number" class="inp inp-big" id="ed-amount" value="${e.amount}" oninput="document.getElementById('ed-total').value=(parseFloat(this.value)||0)+(parseFloat(document.getElementById('ed-visit').value)||0)"></div>
+      <div class="field f-visit"><div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:14px;font-weight:800;">🩺 ভিজিট</span></div>
+        <input type="number" class="inp inp-big" id="ed-visit" value="${e.visit||0}" oninput="document.getElementById('ed-total').value=(parseFloat(this.value)||0)+(parseFloat(document.getElementById('ed-amount').value)||0)"></div>
+    </div>
+    <div class="field f-money"><div class="field-label"><div class="fl-dot"></div><span class="fl-text" style="font-size:15px;font-weight:900;">🧾 মোট</span></div>
+      <input type="number" class="inp inp-calc" id="ed-total" value="${e.total}" readonly style="font-size:22px;font-weight:900;"></div>
+    <button class="btn btn-cash btn-full" onclick="saveEdit('${id}')">💾 আপডেট করুন</button>`;
+  openModal('modal-edit');
+}
+function saveEdit(id){
+  const e=DB.cash.find(x=>x.id===id);
+  if(!e) return;
+  e.date=document.getElementById('ed-date').value;
+  e.desc=document.getElementById('ed-desc').value.trim();
+  e.amount=parseFloat(document.getElementById('ed-amount').value)||0;
+  e.visit=parseFloat(document.getElementById('ed-visit').value)||0;
+  e.total=e.amount+e.visit;
+  saveDB(); renderCashList();
+  closeModal('modal-edit');
+  toast('✅ আপডেট হয়েছে!');
+}
+
+// ════════════════════════════════════════════
+//  DELETE
+// ════════════════════════════════════════════
+function deleteEntry(type, id){
+  if(!confirm('মুছে দেবেন?')) return;
+  DB[type]=DB[type].filter(e=>e.id!==id);
+  saveDB();
+  if(type==='cash') renderCashList();
+  if(type==='baki') renderBakiList();
+  if(type==='kroy') renderKroyList();
+  if(type==='khoroch') renderKhorochList();
+  toast('🗑️ মুছে ফেলা হয়েছে');
+}
+function deleteCustomer(custId){
+  if(!confirm('কাস্টমার ও তার সব হিসাব মুছবেন?')) return;
+  const c=DB.customers.find(x=>x.id===custId);
+  if(!c) return;
+  DB.baki=DB.baki.filter(e=>e.name.toLowerCase()!==c.name.toLowerCase());
+  DB.customers=DB.customers.filter(x=>x.id!==custId);
+  saveDB(); renderBakiList();
+  closeModal('modal-custDetail');
+  toast('🗑️ কাস্টমার মুছে ফেলা হয়েছে');
+}
+
+// ════════════════════════════════════════════
+//  BILL / MEMO
+// ════════════════════════════════════════════
+let currentBillData=null;
+
+function showSingleBill(type, id){
+  const e=DB[type].find(x=>x.id===id);
+  if(!e) return;
+  currentMemoType=type;
+  currentBillData={type,entry:e};
+  const note=document.getElementById('memoNote').value;
+  document.getElementById('memoTitle').textContent='🧾 '+(type==='cash'?'নগদ বিক্রয়':'বাকি বিক্রয়')+' বিল';
+  renderBillContent(type,[e],note);
+  openModal('modal-memo');
+}
+
+function openMemoModal(type, custId=null){
+  currentMemoType=type;
+  currentMemoCustomerId=custId;
+  let entries=[];
+  if(type==='cash'){
+    entries=DB.cash.filter(e=>e.date===today());
+    document.getElementById('memoTitle').textContent='📄 আজকের নগদ বিক্রয় মেমো';
+  } else if(custId){
+    const c=DB.customers.find(x=>x.id===custId);
+    entries=DB.baki.filter(e=>c&&e.name.toLowerCase()===c.name.toLowerCase());
+    document.getElementById('memoTitle').textContent=`🧾 ${c?c.name:''} — বাকি মেমো`;
+  }
+  document.getElementById('memoNote').value='';
+  renderBillContent(type, entries, '');
+  openModal('modal-memo');
+}
+
+function generateMemo(){
+  const note=document.getElementById('memoNote').value;
+  let entries=[];
+  if(currentMemoType==='cash') entries=DB.cash.filter(e=>e.date===today());
+  else if(currentMemoCustomerId){
+    const c=DB.customers.find(x=>x.id===currentMemoCustomerId);
+    entries=DB.baki.filter(e=>c&&e.name.toLowerCase()===c.name.toLowerCase());
+  } else if(currentBillData) entries=[currentBillData.entry];
+  renderBillContent(currentMemoType, entries, note);
+  toast('✅ নোট যোগ হয়েছে!');
+}
+
+function renderBillContent(type, entries, note){
+  const isCash=(type==='cash');
+  const total=entries.reduce((s,e)=>s+(e.total||e.todayBaki||0),0);
+  let rows='';
+  if(isCash){
+    rows=entries.map((e,i)=>`
+      <div class="bill-row" style="align-items:center;">
+        <span style="flex:1;">${e.desc||'বিক্রয়'}</span>
+        <span style="margin-right:8px;">${taka(e.amount)}</span>
+        <span style="display:flex;gap:3px;flex-shrink:0;">
+          <button onclick="memoEditEntry('cash','${e.id}')" style="font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid #93c5fd;background:#eff6ff;color:#1e40af;cursor:pointer;font-family:inherit;">✏️</button>
+          <button onclick="memoDeleteEntry('cash','${e.id}')" style="font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--border);background:#fff5f5;color:#dc2626;cursor:pointer;font-family:inherit;">🗑️</button>
+        </span>
+      </div>
+      ${e.visit?`<div class="bill-row"><span style="padding-left:12px;">🩺 ভিজিট</span><span>${taka(e.visit)}</span></div>`:''}`).join('');
+    rows+=`<div class="bill-row bill-total"><span>মোট বিক্রয়</span><span>${taka(total)}</span></div>`;
+  } else {
+    rows=entries.map(e=>`
+      <div class="bill-row" style="align-items:center;">
+        <span style="flex:1;">${fmtDate(e.date)}</span>
+        <span style="display:flex;gap:3px;flex-shrink:0;">
+          <button onclick="memoEditEntry('baki','${e.id}')" style="font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid #93c5fd;background:#eff6ff;color:#1e40af;cursor:pointer;font-family:inherit;">✏️</button>
+          <button onclick="memoDeleteEntry('baki','${e.id}')" style="font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--border);background:#fff5f5;color:#dc2626;cursor:pointer;font-family:inherit;">🗑️</button>
+        </span>
+      </div>
+      <div class="bill-row"><span style="padding-left:8px;">বাকি</span><span>${taka(e.todayBaki)}</span></div>
+      <div class="bill-row"><span style="padding-left:8px;">জমা</span><span>${taka(e.joma)}</span></div>
+      <div class="bill-row"><span style="padding-left:8px;font-weight:700;">অবশিষ্ট</span><span style="font-weight:700;color:${e.remain>0?'#dc2626':'#059669'}">${taka(e.remain)}</span></div>`).join('');
+    const lastRemain=entries.sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0]?.remain||0;
+    rows+=`<div class="bill-row bill-total"><span>মোট বাকি পাওনা</span><span style="color:${lastRemain>0?'#dc2626':'#059669'}">${taka(lastRemain)}</span></div>`;
+  }
+  const billHTML=`
+    <div class="bill-header">
+      <div style="font-size:28px;margin-bottom:4px;">💊</div>
+      <div class="bill-pharmacy">বিসমিল্লাহ ফার্মেসী</div>
+      <div class="bill-address">বামনসুন্দর দারোগার হাট, মিরসরাই, চট্টগ্রাম</div>
+      <span class="bill-type-tag" style="background:${isCash?'var(--cash-light)':'var(--baki-light)'};color:${isCash?'var(--cash-dark)':'var(--baki-dark)'};">
+        ${isCash?'💚 নগদ বিক্রয় মেমো':'❤️ বাকি বিক্রয় মেমো'}
+      </span>
+    </div>
+    <div class="bill-row"><span>তারিখ:</span><span>${fmtDate(today())}</span></div>
+    ${!isCash&&entries[0]?.name?`<div class="bill-row"><span>গ্রাহক:</span><span>${entries[0].name}</span></div>`:''}
+    ${!isCash&&entries[0]?.phone?`<div class="bill-row"><span>মোবাইল:</span><span>${entries[0].phone}</span></div>`:''}
+    <div style="height:8px;"></div>
+    ${rows}
+    ${note?`<div style="margin-top:10px;padding:8px 10px;background:#fffbeb;border-radius:8px;border-left:3px solid var(--gold);font-size:12px;">📝 ${note}</div>`:''}
+    <div class="bill-footer">
+      ধন্যবাদ আপনার ক্রয়ের জন্য 🙏<br>
+      বিল নং: ${genId().slice(-6).toUpperCase()}
+    </div>`;
+  document.getElementById('billContent').innerHTML=billHTML;
+}
+
+function memoDeleteEntry(type, id){
+  if(!confirm('এই এন্ট্রি মুছে দেবেন?')) return;
+  DB[type]=DB[type].filter(e=>e.id!==id);
+  saveDB();
+  if(type==='cash'){
+    renderCashList();
+    const entries=DB.cash.filter(e=>e.date===today());
+    renderBillContent('cash', entries, document.getElementById('memoNote').value);
+  } else {
+    renderBakiList();
+    const c=DB.customers.find(x=>x.id===currentMemoCustomerId);
+    const entries=DB.baki.filter(e=>c&&e.name.toLowerCase()===c.name.toLowerCase());
+    renderBillContent('baki', entries, document.getElementById('memoNote').value);
+  }
+  toast('🗑️ এন্ট্রি মুছে ফেলা হয়েছে');
+}
+
+function memoEditEntry(type, id){
+  closeModal('modal-memo');
+  const entry=(DB[type]||[]).find(e=>e.id===id);
+  if(!entry) return;
+  openEditModal(type, id);
+}
+
+function printMemo(){
+  const content=document.getElementById('billContent').innerHTML;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+      body{font-family:'Hind Siliguri',sans-serif;max-width:300px;margin:0 auto;padding:20px;}
+      .bill-header{text-align:center;padding-bottom:12px;border-bottom:2px dashed #ccc;margin-bottom:12px;}
+      .bill-pharmacy{font-size:18px;font-weight:800;color:#065f46;}
+      .bill-address{font-size:11px;color:#64748b;}
+      .bill-type-tag{display:inline-block;margin-top:6px;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#d1fae5;color:#065f46;}
+      .bill-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid #f1f5f9;}
+      .bill-total{font-weight:900;font-size:15px;padding-top:8px;margin-top:6px;border-top:2px solid #ccc;}
+      .bill-footer{text-align:center;margin-top:12px;font-size:11px;color:#64748b;padding-top:10px;border-top:1px dashed #ccc;}
+    </style></head><body>${content}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),800);
+}
+
+// ════════════════════════════════════════════
+//  REPORT
+// ════════════════════════════════════════════
+function openReportModal(){
+  openModal('modal-report');
+  updateLastBackupInfo();
+  const savedEmail = localStorage.getItem('backupEmail');
+  if(savedEmail){ const el=document.getElementById('backupEmail'); if(el) el.value=savedEmail; }
+}
+function generateReport(){
+  const from=document.getElementById('rptFrom').value;
+  const to=document.getElementById('rptTo').value;
+  if(!from||!to){ toast('তারিখ দিন!'); return; }
+  const inRange=d=>d>=from&&d<=to;
+  const cashList=DB.cash.filter(e=>inRange(e.date));
+  const bakiList=DB.baki.filter(e=>inRange(e.date));
+  const op=DB.opening.filter(e=>inRange(e.date)).reduce((s,e)=>s+(e.amount||0),0);
+  const totalCash=cashList.reduce((s,e)=>s+(e.total||0),0);
+  const totalBakiNew=bakiList.reduce((s,e)=>s+(e.todayBaki||0),0);
+  const totalJoma=bakiList.reduce((s,e)=>s+(e.joma||0),0);
+  const html=`
+    <div style="background:var(--ink);color:#fff;border-radius:var(--r);padding:18px;">
+      <div style="font-size:13px;opacity:.7;font-weight:700;margin-bottom:14px;">
+        📅 ${fmtDate(from)} — ${fmtDate(to)}
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="opacity:.8;">💜 প্রারম্ভিক ক্যাশ</span>
+        <span style="font-weight:700;color:#a78bfa;">${taka(op)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="opacity:.8;">💚 নগদ বিক্রয় (${cashList.length}টি)</span>
+        <span style="font-weight:700;color:#4ade80;">${taka(totalCash)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.1);">
+        <span style="opacity:.8;">❤️ বাকি বিক্রয় (${bakiList.length}টি)</span>
+        <span style="font-weight:700;color:#f87171;">${taka(totalBakiNew)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;">
+        <span style="opacity:.8;">💰 জমা আদায়</span>
+        <span style="font-weight:700;color:#4ade80;">${taka(totalJoma)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:2px solid rgba(255,255,255,.2);font-size:18px;font-weight:900;">
+        <span>📊 মোট বিক্রয়</span>
+        <span style="color:#4ade80;">${taka(totalCash+totalBakiNew)}</span>
+      </div>
+    </div>`;
+  document.getElementById('reportContent').innerHTML=html;
+}
+
+// ════════════════════════════════════════════
+//  CLICK OUTSIDE → HIDE AUTOCOMPLETE
+// ════════════════════════════════════════════
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.inp-wrap'))
+    document.querySelectorAll('.ac-list').forEach(el=>el.style.display='none');
+});
+
+// ════════════════════════════════════════════
+//  ক্রয় হিসাব
+// ════════════════════════════════════════════
+let kroyType = 'nagod';
+
+function setKroyType(type) {
+  kroyType = type;
+  const nagodBtn=document.getElementById('kroy-type-nagod');
+  const bakiBtn=document.getElementById('kroy-type-baki');
+  const jomaField=document.getElementById('kroyJomaField');
+  const label=document.getElementById('kroyTodayLabel');
+  const remainLabel=document.getElementById('kroyRemainLabel');
+  const submitBtn=document.getElementById('kroySubmitBtn');
+  const title=document.getElementById('kroyEntryTitle');
+  const remainInp=document.getElementById('kroyRemain');
+  if(type==='nagod'){
+    nagodBtn.style.cssText='padding:12px;border-radius:10px;border:2px solid #1e40af;background:#1e40af;color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;';
+    bakiBtn.style.cssText='padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;';
+    jomaField.style.display='none';
+    label.innerHTML='💵 আজকের নগদ ক্রয় <span style="color:var(--baki);">*</span>';
+    label.style.color='#1e40af';
+    remainLabel.innerHTML='🧾 মোট খরচ <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span>';
+    remainInp.style.color='#1e40af';remainInp.style.background='#eff6ff';remainInp.style.borderColor='#1e40af';
+    submitBtn.textContent='💾  নগদ ক্রয় সেভ করুন';
+    title.textContent='নগদ ক্রয় এন্ট্রি';
+  } else {
+    bakiBtn.style.cssText='padding:12px;border-radius:10px;border:2px solid var(--baki);background:var(--baki);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;';
+    nagodBtn.style.cssText='padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;';
+    jomaField.style.display='block';
+    label.innerHTML='🔴 আজকের বাকি ক্রয় <span style="color:var(--baki);">*</span>';
+    label.style.color='var(--baki-dark)';
+    remainLabel.innerHTML='🧾 অবশিষ্ট দিতে হবে <span style="font-size:11px;font-weight:500;color:var(--muted);">(অটো)</span>';
+    remainInp.style.color='var(--baki-dark)';remainInp.style.background='var(--baki-pale)';remainInp.style.borderColor='var(--baki)';
+    submitBtn.textContent='💾  বাকি ক্রয় সেভ করুন';
+    title.textContent='বাকি ক্রয় এন্ট্রি';
+  }
+  calcKroyBalance();
+}
+
+function acKroyCompany(inp){
+  const v=inp.value.toLowerCase();if(!v){hideAC('ac-kroyCompany');return;}
+  const set=new Set();
+  if(DB.companies) DB.companies.forEach(c=>set.add(c.name));
+  DB.kroy.forEach(e=>{if(e.company)set.add(e.company);});
+  const hits=[...set].filter(c=>c.toLowerCase().includes(v)).slice(0,6);
+  showAC('ac-kroyCompany',hits,'setKroyCompany');
+}
+function setKroyCompany(val){
+  document.getElementById('kroyCompany').value=val;
+  hideAC('ac-kroyCompany');
+  if(DB.companies){const comp=DB.companies.find(c=>c.name.toLowerCase()===val.toLowerCase());if(comp&&comp.phone)document.getElementById('kroyPhone').value=comp.phone;}
+  loadKroyPrevBaki();
+}
+
+function openCompanyPicker(){
+  if(!DB.companies||!DB.companies.length){toast('আগে কোম্পানি যুক্ত করুন!');return;}
+  const list=document.getElementById('companyPickerList');
+  list.innerHTML=DB.companies.sort((a,b)=>a.name.localeCompare(b.name,'bn')).map(c=>`
+    <div onclick="selectCompany('${c.id}')" style="padding:12px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏢</div>
+      <div>
+        <div style="font-size:14px;font-weight:800;color:#1e40af;">${c.name}</div>
+        ${c.phone?`<div style="font-size:12px;color:var(--muted);">📱 ${c.phone}</div>`:''}
+      </div>
+    </div>`).join('');
+  openModal('modal-companyPicker');
+}
+function selectCompany(id){
+  const c=DB.companies.find(x=>x.id===id);if(!c)return;
+  document.getElementById('kroyCompany').value=c.name;
+  if(c.phone)document.getElementById('kroyPhone').value=c.phone;
+  closeModal('modal-companyPicker');
+  loadKroyPrevBaki();
+}
+function openAddCompanyModal(){
+  document.getElementById('newCompanyName').value='';
+  document.getElementById('newCompanyPhone').value='';
+  openModal('modal-addCompany');
+}
+function addCompany(){
+  const name=document.getElementById('newCompanyName').value.trim();
+  const phone=document.getElementById('newCompanyPhone').value.trim();
+  if(!name){toast('কোম্পানির নাম দিন!');return;}
+  if(!DB.companies)DB.companies=[];
+  if(DB.companies.find(c=>c.name.toLowerCase()===name.toLowerCase())){toast('এই নামে কোম্পানি আছে!');return;}
+  DB.companies.push({id:genId(),name,phone});
+  saveDB();renderKroyList();
+  closeModal('modal-addCompany');
+  toast('✅ কোম্পানি যোগ হয়েছে!');
+}
+
+function loadKroyPrevBaki(){
+  const company=document.getElementById('kroyCompany').value.trim();
+  if(!company){document.getElementById('kroyPrevBaki').value='';calcKroyBalance();return;}
+  const entries=DB.kroy.filter(e=>e.company.toLowerCase()===company.toLowerCase()&&e.kroyType==='baki').sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastRemain=entries.length>0?(entries[0].remain||0):0;
+  document.getElementById('kroyPrevBaki').value=lastRemain||'';
+  calcKroyBalance();
+}
+
+function calcKroyBalance(){
+  const today=parseFloat(document.getElementById('kroyTodayAmount').value)||0;
+  const prev=parseFloat(document.getElementById('kroyPrevBaki').value)||0;
+  const joma=parseFloat(document.getElementById('kroyJoma').value)||0;
+  if(kroyType==='nagod'){
+    document.getElementById('kroyRemain').value=today||'';
+  } else {
+    document.getElementById('kroyRemain').value=Math.max(0,prev+today-joma)||'';
+  }
+}
+
+function saveKroy(){
+  const company=document.getElementById('kroyCompany').value.trim();
+  const todayAmt=parseFloat(document.getElementById('kroyTodayAmount').value)||0;
+  if(!company){toast('কোম্পানির নাম দিন!');return;}
+  if(!todayAmt){toast('ক্রয়ের পরিমাণ দিন!');return;}
+  const cam=document.getElementById('kroyCamera');
+  const entry={
+    id:genId(),type:'kroy',kroyType,
+    date:document.getElementById('kroyDate').value,
+    company,phone:document.getElementById('kroyPhone').value.trim(),
+    prev:parseFloat(document.getElementById('kroyPrevBaki').value)||0,
+    todayAmt,
+    joma:parseFloat(document.getElementById('kroyJoma').value)||0,
+    remain:parseFloat(document.getElementById('kroyRemain').value)||0,
+    photo:cam._photoData||'',createdAt:new Date().toISOString()
+  };
+  DB.kroy.unshift(entry);
+  if(!DB.companies)DB.companies=[];
+  let comp=DB.companies.find(c=>c.name.toLowerCase()===company.toLowerCase());
+  if(!comp)DB.companies.push({id:genId(),name:company,phone:entry.phone});
+  else if(entry.phone)comp.phone=entry.phone;
+  saveDB();renderKroyList();renderCompanyList();
+  ['kroyCompany','kroyPhone','kroyPrevBaki','kroyTodayAmount','kroyJoma','kroyRemain'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('kroyPhotoPreview').innerHTML='';
+  cam._photoData='';cam.value='';
+  toast('✅ ক্রয় এন্ট্রি সেভ হয়েছে!');
+}
+
+function renderKroyList(filter=''){
+  let data=DB.kroy;
+  if(filter)data=data.filter(e=>(e.company||'').toLowerCase().includes(filter.toLowerCase()));
+  const total=data.reduce((s,e)=>s+(e.todayAmt||0),0);
+  const totalBaki=data.filter(e=>e.kroyType==='baki').reduce((s,e)=>s+(e.remain||0),0);
+  document.getElementById('kroyTotalDisplay').textContent=taka(total);
+  document.getElementById('kroyCountDisplay').textContent=`${data.length}টি এন্ট্রি`;
+  document.getElementById('kroyBakiDisplay').textContent=taka(totalBaki);
+  const list=document.getElementById('kroyEntryList');
+  if(!data.length){list.innerHTML='<div class="empty"><div class="e-icon">🛒</div><p>কোনো ক্রয় নেই</p></div>';return;}
+  const groups={};
+  data.forEach(e=>{const k=(e.company||'অজানা').slice(0,1).toUpperCase();if(!groups[k])groups[k]=[];groups[k].push(e);});
+  list.innerHTML=Object.keys(groups).sort().map(letter=>`
+    <div class="alpha-divider">
+      <div class="alpha-circle" style="background:#1e40af;">${letter}</div>
+      <div class="alpha-line"></div>
+    </div>
+    ${groups[letter].map(e=>`
+    <div class="entry-item" style="border-left-color:#1e40af;">
+      <div class="ei-top">
+        <div class="ei-main">
+          <div class="ei-title" style="color:#1e40af;">${e.company}</div>
+          <div class="ei-meta">
+            <span>📅 ${fmtDate(e.date)}</span>
+            ${e.phone?`<span><a href="tel:${e.phone}" style="color:#1e40af;text-decoration:none;">📱 ${e.phone}</a></span>`:''}
+            <span style="background:${e.kroyType==='baki'?'var(--baki-pale)':'#dbeafe'};border-radius:6px;padding:1px 7px;font-weight:700;color:${e.kroyType==='baki'?'var(--baki-dark)':'#1e40af'};">${e.kroyType==='baki'?'🔴 বাকি':'💵 নগদ'}</span>
+          </div>
+        </div>
+        <div class="ei-right">
+          <div class="ei-amount" style="color:#1e40af;">${taka(e.todayAmt)}</div>
+          ${e.kroyType==='baki'?`<span class="ei-badge" style="background:var(--baki-pale);color:var(--baki-dark);">${e.remain>0?'বাকি':'পরিশোধ'}</span>`:''}
+        </div>
+      </div>
+      ${e.kroyType==='baki'&&e.remain>0?`<div style="margin-top:6px;display:flex;justify-content:space-between;font-size:12px;padding:6px 8px;background:var(--baki-pale);border-radius:8px;">
+        <span>পূর্বের: ${taka(e.prev)}</span><span>জমা: ${taka(e.joma)}</span>
+        <span style="color:var(--baki-dark);font-weight:800;">বাকি: ${taka(e.remain)}</span>
+      </div>`:''}
+      ${e.photo?`<img src="${e.photo}" class="ei-photo">`:''}
+      <div class="ei-actions">
+        <button class="btn btn-sm" style="background:#dbeafe;color:#1e40af;" onclick="shareKroy('${e.id}')">📲 শেয়ার</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteEntry('kroy','${e.id}')">🗑️</button>
+      </div>
+    </div>`).join('')}`).join('');
+}
+function filterKroyList(v){renderKroyList(v);}
+
+// কোম্পানি তালিকা (দেখুন/লুকান সহ)
+function renderCompanyList(){
+  if(!DB.companies) return;
+  const count=DB.companies.length;
+  const el=document.getElementById('companyListCount');
+  if(el) el.textContent=count;
+  const list=document.getElementById('companyListItems');
+  if(!list) return;
+  if(!count){list.innerHTML='<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;">কোনো কোম্পানি নেই<br>উপরে + বাটনে যোগ করুন</div>';return;}
+  const sorted=[...DB.companies].sort((a,b)=>a.name.localeCompare(b.name,'bn'));
+  list.innerHTML=sorted.map((c,i)=>{
+    // last entry for this company
+    const entries=DB.kroy.filter(e=>e.company.toLowerCase()===c.name.toLowerCase()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const lastEntry=entries[0];
+    const totalBaki=entries.filter(e=>e.kroyType==='baki').reduce((s,e)=>s+(e.remain||0),0);
+    return `<div style="padding:11px 14px;border-bottom:1px solid #dbeafe;display:flex;align-items:center;gap:10px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:#1e40af;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;">${String(i+1).padStart(2,'০')}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:800;color:#1e40af;">${c.name}</div>
+        <div style="font-size:11px;color:var(--muted);">
+          ${c.phone?`<a href="tel:${c.phone}" style="color:#1e40af;text-decoration:none;">📱 ${c.phone}</a>`:''}
+          ${lastEntry?`&nbsp;·&nbsp;শেষ: ${fmtDate(lastEntry.date)}`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        ${totalBaki>0?`<div style="font-size:12px;font-weight:800;color:var(--baki-dark);">🔴 ${taka(totalBaki)}</div>`:'<div style="font-size:11px;color:var(--cash-dark);">✅ পরিশোধ</div>'}
+        <div style="display:flex;gap:4px;margin-top:4px;">
+          <button onclick="selectCompanyForEntry('${c.id}')" style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #93c5fd;background:#eff6ff;color:#1e40af;cursor:pointer;font-family:inherit;">এন্ট্রি</button>
+          <button onclick="deleteCompany('${c.id}')" style="font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;font-family:inherit;">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectCompanyForEntry(id){
+  const c=DB.companies.find(x=>x.id===id); if(!c) return;
+  // close company list, open entry section
+  document.getElementById('body-companyList').style.display='none';
+  const body=document.getElementById('body-kroyEntry');
+  body.classList.add('open'); body.style.display='block';
+  document.getElementById('kroyCompany').value=c.name;
+  if(c.phone) document.getElementById('kroyPhone').value=c.phone;
+  loadKroyPrevBaki();
+  body.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function deleteCompany(id){
+  if(!confirm('কোম্পানি মুছে দেবেন?')) return;
+  DB.companies=DB.companies.filter(x=>x.id!==id);
+  saveDB(); renderCompanyList(); renderKroyList();
+  toast('🗑️ কোম্পানি মুছে ফেলা হয়েছে');
+}
+
+// খরচের নতুন ধরন যোগ
+// খরচের ধরন — অটোকমপ্লিট (পূর্বের এন্ট্রি থেকে)
+function acKhorochType(inp){
+  const v=inp.value.toLowerCase();
+  if(!v){hideAC('ac-khorochType');return;}
+  const set=new Set();
+  DB.khoroch.forEach(e=>{if(e.ktype)set.add(e.ktype);});
+  const hits=[...set].filter(d=>d.toLowerCase().includes(v)).slice(0,8);
+  showAC('ac-khorochType',hits,'setKhorochType');
+}
+function setKhorochType(val){
+  document.getElementById('khorochType').value=val;
+  hideAC('ac-khorochType');
+}
+
+function openAddKhorochType(){ /* no longer needed */ }
+function saveNewKhorochType(){ /* no longer needed */ }
+function loadCustomKhorochTypes(){ /* no longer needed */ }
+
+
+function shareKroy(id){
+  const e=DB.kroy.find(x=>x.id===id);if(!e)return;
+  const lines=['🏥 *বিসমিল্লাহ ফার্মেসী*','বামনসুন্দর দারোগার হাট, মিরসরাই, চট্টগ্রাম','━━━━━━━━━━━━━━━━',
+    `🛒 *${e.kroyType==='baki'?'বাকি ক্রয়':'নগদ ক্রয়'}*`,
+    `📅 তারিখ: ${fmtDate(e.date)}`,`🏢 কোম্পানি: ${e.company}`,
+    e.phone?`📱 মোবাইল: ${e.phone}`:'','━━━━━━━━━━━━━━━━',
+    `💵 ক্রয়: ${taka(e.todayAmt)}`,
+    e.kroyType==='baki'?`💚 জমা: ${taka(e.joma)}`:'',
+    e.kroyType==='baki'?`🔴 *বাকি: ${taka(e.remain)}*`:'',
+    '\nধন্যবাদ 🙏'].filter(Boolean);
+  if(navigator.share){navigator.share({title:'ক্রয় বিবরণ',text:lines.join('\n')}).catch(()=>{});}
+  else window.open('https://wa.me/?text='+encodeURIComponent(lines.join('\n')),'_blank');
+}
+
+
+// ════════════════════════════════════════════
+//  খরচ হিসাব
+// ════════════════════════════════════════════
+function acKhorochDesc(inp){
+  const v=inp.value.toLowerCase(); if(!v){hideAC('ac-khorochDesc');return;}
+  const set=new Set(); DB.khoroch.forEach(e=>{if(e.desc)set.add(e.desc);});
+  const hits=[...set].filter(d=>d.toLowerCase().includes(v)).slice(0,6);
+  showAC('ac-khorochDesc',hits,'setKhorochDesc');
+}
+function setKhorochDesc(val){document.getElementById('khorochDesc').value=val;hideAC('ac-khorochDesc');}
+
+function saveKhoroch(){
+  const desc=document.getElementById('khorochDesc').value.trim();
+  const ktype=document.getElementById('khorochType').value.trim();
+  const amount=parseFloat(document.getElementById('khorochAmount').value)||0;
+  if(!ktype){toast('খরচের ধরন দিন!');document.getElementById('khorochType').focus();return;}
+  if(!desc){toast('খরচের বিবরণ দিন!');return;}
+  if(!amount){toast('টাকার পরিমাণ দিন!');return;}
+  const cam=document.getElementById('khorochCamera');
+  const entry={
+    id:genId(), type:'khoroch',
+    date:document.getElementById('khorochDate').value,
+    ktype, desc, amount,
+    photo:cam._photoData||'', createdAt:new Date().toISOString()
+  };
+  DB.khoroch.unshift(entry); saveDB(); renderKhorochList();
+  document.getElementById('khorochType').value='';
+  document.getElementById('khorochDesc').value='';
+  document.getElementById('khorochAmount').value='';
+  document.getElementById('khorochPhotoPreview').innerHTML='';
+  cam._photoData=''; cam.value='';
+  toast('✅ খরচ এন্ট্রি সেভ হয়েছে!');
+}
+
+function renderKhorochList(filter=''){
+  let data=DB.khoroch;
+  if(filter) data=data.filter(e=>(e.desc||'').toLowerCase().includes(filter.toLowerCase())||e.date.includes(filter));
+  const total=data.reduce((s,e)=>s+(e.amount||0),0);
+  document.getElementById('khorochTotalDisplay').textContent=taka(total);
+  // মাসিক breakdown by type
+  const curMonth=today().slice(0,7);
+  const monthData=DB.khoroch.filter(e=>e.date.startsWith(curMonth));
+  const typeMap={};
+  monthData.forEach(e=>{typeMap[e.ktype]=(typeMap[e.ktype]||0)+(e.amount||0);});
+  const typeEmoji={'বেতন':'👷','ভাড়া':'🏠','বিদ্যুৎ':'⚡','পানি':'💧','ইন্টারনেট':'🌐','পরিবহন':'🚗','অন্যান্য':'📦'};
+  const grid=document.getElementById('khorochMonthlyGrid');
+  if(grid) grid.innerHTML=Object.keys(typeMap).map(k=>`
+    <div style="background:#fff;border-radius:8px;padding:7px;text-align:center;border:1px solid #fde68a;">
+      <div style="font-size:16px;">${typeEmoji[k]||'📦'}</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:600;">${k}</div>
+      <div style="font-size:12px;font-weight:800;color:#92400e;">${taka(typeMap[k])}</div>
+    </div>`).join('');
+  const list=document.getElementById('khorochEntryList');
+  if(!data.length){list.innerHTML='<div class="empty"><div class="e-icon">💸</div><p>কোনো খরচ নেই</p></div>';return;}
+  list.innerHTML=data.map(e=>`
+    <div class="entry-item" style="border-left-color:#d97706;">
+      <div class="ei-top">
+        <div class="ei-main">
+          <div class="ei-title" style="color:#92400e;">${e.desc}</div>
+          <div class="ei-meta">
+            <span>📅 ${fmtDate(e.date)}</span>
+            <span style="background:#fef3c7;border-radius:6px;padding:1px 7px;font-weight:700;color:#92400e;">${e.ktype||''}</span>
+          </div>
+        </div>
+        <div class="ei-right">
+          <div class="ei-amount" style="color:#92400e;">${taka(e.amount)}</div>
+          <span class="ei-badge" style="background:#fef3c7;color:#92400e;">খরচ</span>
+        </div>
+      </div>
+      ${e.photo?`<img src="${e.photo}" class="ei-photo">`:''}
+      <div class="ei-actions">
+        <button class="btn btn-sm" style="background:#fef3c7;color:#92400e;" onclick="shareKhoroch('${e.id}')">📲 শেয়ার</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteEntry('khoroch','${e.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function filterKhorochList(v){renderKhorochList(v);}
+
+function shareKhoroch(id){
+  const e=DB.khoroch.find(x=>x.id===id); if(!e) return;
+  const lines=[
+    '🏥 *বিসমিল্লাহ ফার্মেসী*','━━━━━━━━━━━━━━━━',
+    '💸 *খরচ বিবরণ*',`📅 তারিখ: ${fmtDate(e.date)}`,
+    `🏷️ ধরন: ${e.ktype}`,`📝 বিবরণ: ${e.desc}`,
+    `💵 *টাকা: ${taka(e.amount)}*`,'\nধন্যবাদ 🙏'
+  ];
+  if(navigator.share){navigator.share({title:'খরচ বিবরণ',text:lines.join('\n')}).catch(()=>{});}
+  else window.open('https://wa.me/?text='+encodeURIComponent(lines.join('\n')),'_blank');
+}
+
+
+// ════════════════════════════════════════════
+function shareMemoIMO(){
+  // IMO uses the same intent as WhatsApp text sharing
+  // Build the same text then open via imo:// or fallback to share API
+  const lines = buildShareLines();
+  const text = lines.join('\n');
+  // Try Web Share API first (works on Android for any app including IMO)
+  if(navigator.share){
+    navigator.share({ title:'বিসমিল্লাহ ফার্মেসী — হিসাব', text })
+      .catch(()=>{});
+  } else {
+    // Fallback: open imo deep link (imo:// on Android)
+    const encoded = encodeURIComponent(text);
+    // Try imo deep link, fallback copy
+    const a = document.createElement('a');
+    a.href = 'imo://chat?text=' + encoded;
+    a.click();
+    setTimeout(()=>{
+      navigator.clipboard.writeText(text).then(()=>toast('✅ টেক্সট কপি হয়েছে! IMO তে পেস্ট করুন'));
+    }, 800);
+  }
+}
+
+function buildShareLines(){
+  let lines=['🏥 *বিসমিল্লাহ ফার্মেসী*','বামনসুন্দর দারোগার হাট, মিরসরাই, চট্টগ্রাম','━━━━━━━━━━━━━━━━'];
+  if(currentMemoType==='cash'){
+    const entries=DB.cash.filter(e=>e.date===today());
+    const op=DB.opening.find(o=>o.date===today());
+    lines.push('💚 *নগদ বিক্রয় মেমো*');
+    lines.push(`📅 তারিখ: ${fmtDate(today())}`);
+    if(op) lines.push(`💜 প্রারম্ভিক ক্যাশ: ${taka(op.amount)}`);
+    lines.push('');
+    entries.forEach(e=>{
+      lines.push(`📝 ${e.desc||'বিক্রয়'}: ${taka(e.amount)}`);
+      if(e.visit) lines.push(`  🩺 ভিজিট: ${taka(e.visit)}`);
+    });
+    lines.push('━━━━━━━━━━━━━━━━');
+    const salesTotal=entries.reduce((s,e)=>s+(e.total||0),0);
+    const opAmt=op?(op.amount||0):0;
+    lines.push(`💚 বিক্রয় মোট: ${taka(salesTotal)}`);
+    lines.push(`🧾 *সর্বমোট (ক্যাশ + বিক্রয়): ${taka(opAmt+salesTotal)}*`);
+  } else if(currentMemoCustomerId||currentBillData){
+    const custId=currentMemoCustomerId;
+    const c=custId?DB.customers.find(x=>x.id===custId):null;
+    const entry=currentBillData?.entry;
+    lines.push('❤️ *বাকি বিক্রয় মেমো*');
+    if(c){ lines.push(`👤 গ্রাহক: ${c.name}`); if(c.phone) lines.push(`📱 মোবাইল: ${c.phone}`); }
+    if(entry){
+      lines.push(`📅 তারিখ: ${fmtDate(entry.date)}`);
+      lines.push(`🔴 বাকি: ${taka(entry.todayBaki)}`);
+      lines.push(`💚 জমা: ${taka(entry.joma)}`);
+      lines.push(`📌 *অবশিষ্ট পাবো: ${taka(entry.remain)}*`);
+    }
+  }
+  const note=document.getElementById('memoNote').value;
+  if(note) lines.push(`\n📝 নোট: ${note}`);
+  lines.push('\nধন্যবাদ 🙏');
+  return lines;
+}
+
+// also update shareMemoWA to use buildShareLines
+function shareMemoWA(){
+  const lines=buildShareLines();
+  window.open('https://wa.me/?text='+encodeURIComponent(lines.join('\n')),'_blank');
+}
+
+// ════════════════════════════════════════════
+//  BACKUP & RESTORE
+// ════════════════════════════════════════════
+function downloadBackup(){
+  const data = JSON.stringify(DB, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `bismillah_backup_${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  // save last backup time
+  localStorage.setItem('lastBackup', new Date().toISOString());
+  updateLastBackupInfo();
+  toast('✅ ব্যাকআপ ফাইল ডাউনলোড হয়েছে!');
+}
+
+function emailBackup(){
+  const email = document.getElementById('backupEmail')?.value?.trim()
+    || localStorage.getItem('backupEmail') || '';
+  if(!email){ toast('আগে ইমেইল ঠিকানা দিন!'); document.getElementById('backupEmail')?.focus(); return; }
+  const dateStr = new Date().toLocaleDateString('bn-BD');
+  const cashCount = DB.cash.length;
+  const bakiCount = DB.baki.length;
+  const totalCash = DB.cash.reduce((s,e)=>s+(e.total||0),0);
+  const totalBaki = DB.baki.reduce((s,e)=>s+(e.todayBaki||0),0);
+  const body = `বিসমিল্লাহ ফার্মেসী হিসাব ব্যাকআপ
+তারিখ: ${dateStr}
+
+সারসংক্ষেপ:
+নগদ বিক্রয়: ${cashCount}টি এন্ট্রি — ${taka(totalCash)}
+বাকি বিক্রয়: ${bakiCount}টি এন্ট্রি — ${taka(totalBaki)}
+
+ব্যাকআপ ডেটা (JSON):
+${JSON.stringify(DB)}
+
+---
+এই ইমেইলের ডেটা দিয়ে হিসাব পুনরুদ্ধার করা যাবে।`;
+  const subject = `ফার্মেসী হিসাব ব্যাকআপ — ${dateStr}`;
+  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  localStorage.setItem('lastBackup', new Date().toISOString());
+  localStorage.setItem('backupEmail', email);
+  updateLastBackupInfo();
+}
+
+function driveShare(){
+  // Download the file first, then instruct user to upload to Drive
+  downloadBackup();
+  setTimeout(()=>{
+    alert('✅ ব্যাকআপ ফাইল ডাউনলোড হয়েছে!\n\nএখন:\n1. Google Drive অ্যাপ খুলুন\n2. ＋ বাটন → Upload\n3. Downloads থেকে bismillah_backup ফাইলটি সিলেক্ট করুন\n\nমোবাইল হারালে Drive থেকে ফাইল নামিয়ে Chrome এ খুলুন → রিস্টোর করুন');
+  }, 1000);
+}
+
+function saveEmail(val){
+  localStorage.setItem('backupEmail', val);
+}
+
+function updateLastBackupInfo(){
+  const el = document.getElementById('lastBackupInfo');
+  if(!el) return;
+  const last = localStorage.getItem('lastBackup');
+  if(!last){ el.textContent = 'শেষ ব্যাকআপ: এখনো নেওয়া হয়নি ⚠️'; el.style.color='var(--baki)'; return; }
+  const d = new Date(last);
+  const now = new Date();
+  const diffDays = Math.floor((now - d)/(1000*60*60*24));
+  const timeStr = d.toLocaleDateString('bn-BD') + ' ' + d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
+  if(diffDays >= 3){
+    el.textContent = `⚠️ শেষ ব্যাকআপ: ${timeStr} (${diffDays} দিন আগে — নতুন ব্যাকআপ নিন!)`;
+    el.style.color = 'var(--baki)';
+  } else {
+    el.textContent = `✅ শেষ ব্যাকআপ: ${timeStr}`;
+    el.style.color = 'var(--cash-dark)';
+  }
+}
+
+function restoreBackup(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.cash || !data.baki){ toast('❌ ভুল ফাইল ফরম্যাট!'); return; }
+      if(!confirm(`এই ব্যাকআপ দিয়ে রিস্টোর করবেন?\n\n${data.cash.length}টি নগদ এন্ট্রি\n${data.baki.length}টি বাকি এন্ট্রি`)) return;
+      DB = data;
+      saveDB();
+      renderCashList();
+      renderBakiList();
+      const op=DB.opening.find(o=>o.date===today());
+      document.getElementById('openingDisplay').textContent=op?taka(op.amount):'৳ ০';
+      toast('✅ ডেটা সফলভাবে রিস্টোর হয়েছে!');
+    } catch(err){ toast('❌ ফাইল পড়তে সমস্যা হয়েছে!'); }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+// ব্যাকআপ রিমাইন্ডার — প্রতি ৩ দিনে একবার
+function checkBackupReminder(){
+  const last = localStorage.getItem('lastBackup');
+  if(!last) return; // প্রথমবার রিমাইন্ড দেব না
+  const diffDays = Math.floor((new Date() - new Date(last))/(1000*60*60*24));
+  if(diffDays >= 3){
+    setTimeout(()=>{
+      toast('⚠️ ' + diffDays + ' দিন হয়েছে! ব্যাকআপ নিন → রিপোর্ট → ফাইল ব্যাকআপ');
+    }, 3000);
+  }
+}
+
+// ════════════════════════════════════════════
+//  PWA / HOME SCREEN INSTALL
+// ════════════════════════════════════════════
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if(btn) btn.style.background='var(--cash)';
+});
+
+function installApp(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(()=>{ deferredInstallPrompt=null; });
+  } else {
+    showInstallGuide();
+  }
+}
+
+function showInstallGuide(){
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const msg = isIOS
+    ? '📱 iPhone:\nSafari তে খুলুন → নিচে Share বাটন → "Add to Home Screen" চাপুন'
+    : '📱 Android:\nChrome তে খুলুন → উপরে ⋮ মেনু → "Add to Home Screen" বা "Install App" চাপুন';
+  alert('🏠 হোম স্ক্রিনে যোগ করুন:\n\n' + msg);
+}
+
+// ════════════════════════════════════════════
+//  START
+// ════════════════════════════════════════════
+init();
+// load saved email if any
+const savedEmail = localStorage.getItem('backupEmail');
+if(savedEmail){ const el=document.getElementById('backupEmail'); if(el) el.value=savedEmail; }
+// check backup reminder
+checkBackupReminder();
+</script>
+
+<!-- ══ MODAL: কোম্পানি যুক্ত করুন ══════════════════════════ -->
+<div class="modal-bg" id="modal-addCompany">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">🏢 নতুন কোম্পানি যুক্ত করুন</div>
+      <button class="modal-close" onclick="closeModal('modal-addCompany')">✕</button>
+    </div>
+    <div class="field" style="margin-bottom:12px;">
+      <div class="chk-label" style="color:#1e40af;">🏢 কোম্পানির নাম <span style="color:var(--baki);">*</span></div>
+      <input type="text" class="inp" id="newCompanyName" placeholder="কোম্পানির নাম লিখুন" style="font-size:16px;font-weight:700;color:#1e40af;">
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <div class="chk-label" style="color:#1d4ed8;">📱 মোবাইল নং</div>
+      <input type="tel" class="inp" id="newCompanyPhone" placeholder="০১XXXXXXXXX" style="font-size:16px;font-weight:700;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn btn-ghost" style="border:2px solid var(--border);" onclick="closeModal('modal-addCompany')">বাতিল</button>
+      <button class="btn" style="background:#1e40af;color:#fff;" onclick="addCompany()">✅ যোগ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: কোম্পানি পিকার ══════════════════════════════ -->
+<div class="modal-bg" id="modal-companyPicker">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">🏢 কোম্পানি বেছে নিন</div>
+      <button class="modal-close" onclick="closeModal('modal-companyPicker')">✕</button>
+    </div>
+    <div id="companyPickerList" style="max-height:60vh;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: নতুন খরচের ধরন ══════════════════════════════ -->
+<div class="modal-bg" id="modal-addKhorochType">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">🏷️ নতুন খরচের ধরন যোগ করুন</div>
+      <button class="modal-close" onclick="closeModal('modal-addKhorochType')">✕</button>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <div class="chk-label" style="color:#92400e;">📝 ধরনের নাম <span style="color:var(--baki);">*</span></div>
+      <input type="text" class="inp" id="newKhorochTypeName"
+        placeholder="যেমন: ডাক্তার, টেলিফোন, সার্ভিসিং..."
+        style="font-size:16px;font-weight:700;color:#92400e;background:#fffbeb;border-color:#fde68a;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn btn-ghost" style="border:2px solid var(--border);" onclick="closeModal('modal-addKhorochType')">বাতিল</button>
+      <button class="btn" style="background:#d97706;color:#fff;" onclick="saveNewKhorochType()">✅ যোগ করুন</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
